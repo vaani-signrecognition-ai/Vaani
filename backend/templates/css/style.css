@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  background: #0d6efd;
+  padding: 12px 20px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.logo {
+  font-weight: bold;
+  color: white;
+}
+
+section {
+  padding: 30px;
+}
+
+.btn {
+  padding: 10px 16px;
+  background: #0d6efd;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.btn.secondary {
+  background: #6c757d;
+}
+
+video {
+  width: 320px;
+  border: 2px solid #0d6efd;
+}
