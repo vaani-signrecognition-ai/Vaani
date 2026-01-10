@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAANI - 3D AI Sign Language Platform</title>
+
+    <!-- Bootstrap 5 (Unit 6: Bootstrap Setup) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js for 3D Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* --- UNIT 4 & 5: CSS STYLING & ANIMATIONS --- */
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #1a1a1a; /* Fallback */
+            color: white;
+            transition: background-color 0.5s ease; /* Smooth theme transition */
+        }
+
+        /* 3D Canvas Container */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Behind everything */
+            background: radial-gradient(circle at center, #2b2b2b 0%, #000000 100%);
+        }
+
+        /* --- UNIT 7: BOOTSTRAP NAVBAR --- */
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* VAANI Logo Top Left */
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #fff !important;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #00f260, #0575E6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 500;
+            margin-left: 15px;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #00f260;
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(0,242,96,0.5);
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        /* --- UNIT 5: CSS ANIMATIONS & TRANSITIONS (Practical 11) --- */
+        /* Concept: "On hover, background color smoothly changes... in 2 seconds" */
+        .btn-start-camera {
+            padding: 15px 50px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            border: none;
+            color: white;
+            background-color: #0575E6; /* Initial Blue */
+            box-shadow: 0 0 15px rgba(5, 117, 230, 0.5);
+            
+            /* The Transition Property from Syllabus */
+            transition-property: background-color, transform, box-shadow;
+            transition-duration: 2s; /* Syllabus Requirement: 2 seconds */
+            transition-timing-function: ease-in-out;
+        }
+
+        .btn-start-camera:hover {
+            background-color: #ff9900; /* Syllabus Requirement: Change to Orange */
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 153, 0, 0.8);
+            cursor: pointer;
+        }
+
+        /* --- CAMERA BOX --- */
+        .camera-wrapper {
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: none; /* Hidden initially */
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: expandCam 0.5s ease-out;
+        }
+
+        @keyframes expandCam {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror effect */
+        }
+
+        /* --- SECTIONS --- */
+        .content-section {
+            display: none;
+            padding: 100px 20px;
+            min-height: 100vh;
+            background: rgba(0,0,0,0.7); /* Overlay for readability */
+            backdrop-filter: blur(5px);
+        }
+
+        .section-active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* --- PDF PRACTICAL 21: THEME BUTTONS --- */
+        .theme-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+        .theme-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.2); }
+        .theme-red { background: #ff4757; }
+        .theme-blue { background: #2ed573; } /* Using Greenish for contrast */
+        .theme-dark { background: #2f3542; }
+
+        /* Floating Post Button (Bottom-Left) */
+        .post-event-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00f260 0%, #0575E6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 242, 96, 0.4);
+            z-index: 1000;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .post-event-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 242, 96, 0.6);
+        }
+        
+        .post-event-btn i {
+            color: white;
+            font-size: 24px;
+        }
+
+        /* Hidden form initially */
+        .post-form-container {
+            display: none;
+        }
+
+        .post-form-container.active {
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 3D BACKGROUND -->
+    <div id="canvas-container"></div>
+
+    <!-- NAVBAR (Unit 7) -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid px-4">
+            <!-- Top Left Logo -->
+            <a class="navbar-brand" href="#" onclick="showSection('hero')">
+                <i class="fas fa-hands me-2"></i>VAANI
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('hero')">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('history')">History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('ngos')">NGOs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('events')">Events</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('dictionary')">Dictionary</a></li>
+                    <!-- Unit 3: Button in Form/Nav -->
+                    <li class="nav-item ms-2">
+                        <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="showSection('partner')">Partner With Us</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION (Center Camera) -->
+    <section id="hero" class="hero-section section-active">
+        <div class="container">
+            <h1 class="hero-title">VOICE FOR THE VOICELESS</h1>
+            <p class="lead mb-5 text-light opacity-75">AI-Powered Sign Language Recognition & Learning Platform</p>
+
+            <!-- Practical 11: Button with Transition -->
+            <button id="mainCamBtn" class="btn-start-camera" onclick="toggleCamera()">
+                <i class="fas fa-video me-2"></i> <span id="btnText">Start Camera</span>
+            </button>
+
+            <!-- Camera Feed -->
+            <div class="camera-wrapper mx-auto" id="cameraFeed">
+                <video id="videoElement" autoplay playsinline></video>
+                <div class="position-absolute bottom-0 w-100 p-2 text-center bg-dark bg-opacity-50">
+                    <small class="text-white"><i class="fas fa-circle text-danger me-1 blink"></i> Live AI Detection Active</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT SECTIONS (Hidden) -->
+    
+    <!-- HISTORY -->
+    <section id="history" class="content-section">
+        <div class="container mt-5">
+            <h2 class="display-5 mb-4 text-warning"><i class="fas fa-history"></i> Learning History</h2>
+            <div class="table-responsive bg-dark bg-opacity-50 rounded p-3">
+                <table class="table table-dark table-hover mb-0">
+                    <thead><tr><th>Sign</th><th>Count</th><th>Time</th></tr></thead>
+                    <tbody id="historyData">
+                        <!-- JS Injection -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- NGOs -->
+    <section id="ngos" class="content-section">
+        <div class="container mt-5">
+            <h2 class="display-5 mb-4 text-info"><i class="fas fa-hand-holding-heart"></i> NGO Partners</h2>
+            <div class="row" id="ngoData">
+                <!-- JS Injection -->
+            </div>
+        </div>
+    </section>
+
+    <!-- EVENTS -->
+    <section id="events" class="content-section">
+        <div class="container mt-5">
+            <h2 class="display-5 mb-4 text-success"><i class="fas fa-calendar-alt"></i> Community Events</h2>
+            <div class="row" id="eventData">
+                <!-- JS Injection -->
+            </div>
+
+            <!-- POST EVENT FORM -->
+            <div class="row justify-content-center mt-5 post-form-container" id="postEventForm">
+                <div class="col-md-8 bg-dark bg-opacity-75 p-5 rounded-4 shadow-lg">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0">📅 Post New Event</h3>
+                        <button onclick="togglePostForm()" class="btn btn-sm btn-outline-light">&times; Close</button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">NGO ID</label>
+                        <input type="number" id="ngo_id" class="form-control bg-secondary text-white border-0" placeholder="NGO ID">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Event Title</label>
+                        <input type="text" id="title" class="form-control bg-secondary text-white border-0" placeholder="Event Title">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea id="event_description" class="form-control bg-secondary text-white border-0" rows="4" placeholder="Description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Event Date</label>
+                        <input type="date" id="event_date" class="form-control bg-secondary text-white border-0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" id="location" class="form-control bg-secondary text-white border-0" placeholder="Location">
+                    </div>
+                    <button onclick="postEvent()" class="btn btn-success w-100 py-2 mt-2">Post Event</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DICTIONARY -->
+    <section id="dictionary" class="content-section">
+        <div class="container mt-5 text-center">
+            <h2 class="display-5 mb-4">📖 Sign Dictionary</h2>
+            <div class="input-group input-group-lg mb-5 w-75 mx-auto">
+                <input type="text" class="form-control" placeholder="Search for a sign (e.g. 'Hello')..." id="searchBox">
+                <button class="btn btn-primary" onclick="searchDict()">Search</button>
+            </div>
+            <div id="dictResult" class="p-5 border border-secondary rounded" style="display:none;">
+                <!-- Result -->
+            </div>
+        </div>
+    </section>
+
+    <!-- PARTNER FORM (Unit 3 & 10 Forms) -->
+    <section id="partner" class="content-section">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8 bg-dark bg-opacity-75 p-5 rounded-4 shadow-lg">
+                    <h3 class="mb-4">🤝 Partner With Us</h3>
+                    <div id="partnerSuccess" class="alert alert-success" style="display:none;">Partnership request submitted successfully!</div>
+                    <div id="partnerError" class="alert alert-danger" style="display:none;">Error submitting request. Please try again.</div>
+                    <form id="partnerForm" onsubmit="handleForm(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Organization Name <span class="text-danger">*</span></label>
+                            <input type="text" id="org_name" name="org_name" class="form-control bg-secondary text-white border-0" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Contact Person <span class="text-danger">*</span></label>
+                                <input type="text" id="contact_person" name="contact_person" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" id="phone" name="phone" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email <span class="text-danger">*</span></label>
+                                <input type="email" id="email" name="email" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City <span class="text-danger">*</span></label>
+                                <input type="text" id="city" name="city" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Purpose <span class="text-danger">*</span></label>
+                            <input type="text" id="purpose" name="purpose" class="form-control bg-secondary text-white border-0" placeholder="e.g., Collaboration, Sponsorship, Event Partnership" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description <span class="text-danger">*</span></label>
+                            <textarea id="description" name="description" class="form-control bg-secondary text-white border-0" rows="4" placeholder="Please provide details about your organization and partnership proposal..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 py-2 mt-2">Send Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THEME CONTROLS (Practical 21) -->
+    <div class="theme-controls shadow">
+        <small class="d-block text-white text-center mb-1" style="font-size: 10px;">THEME</small>
+        <div class="d-flex">
+            <div class="theme-btn theme-red" onclick="changeTheme('red')" title="Red Theme"></div>
+            <div class="theme-btn theme-blue" onclick="changeTheme('green')" title="Green Theme"></div>
+            <div class="theme-btn theme-dark" onclick="changeTheme('dark')" title="Dark Theme"></div>
+        </div>
+    </div>
+
+    <!-- Floating Post Event Button -->
+    <div id="postEventBtn" class="post-event-btn" onclick="togglePostForm()" title="Post Event">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <!-- JAVASCRIPT (Unit 8, 9, 10) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- THREE.JS 3D ANIMATION SETUP ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Create colorful geometry (Colorful Things)
+        const geometry = new THREE.IcosahedronGeometry(10, 1);
+        const material = new THREE.MeshNormalMaterial({ wireframe: true });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // Add Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 700;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 50;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.1,
+            color: 0x00f260,
+            transparent: true,
+            opacity: 0.8,
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 20;
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate Objects
+            sphere.rotation.x += 0.002;
+            sphere.rotation.y += 0.002;
+            
+            particlesMesh.rotation.y -= 0.001;
+            particlesMesh.rotation.x -= 0.001;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive Canvas
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+
+        // --- UI LOGIC ---
+
+        // Toggle Post Event Form
+        function togglePostForm() {
+            const form = document.getElementById('postEventForm');
+            form.classList.toggle('active');
+            
+            // Scroll to form if opening and navigate to events section
+            if (form.classList.contains('active')) {
+                // First show events section
+                showSection('events');
+                // Then scroll to form after a short delay
+                setTimeout(() => {
+                    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            }
+        }
+
+        // 1. Navigation
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(s => {
+                s.classList.remove('section-active');
+                s.style.display = 'none'; // Ensure strict hiding
+            });
+            const active = document.getElementById(id);
+            active.style.display = (id === 'hero') ? 'flex' : 'block';
+            setTimeout(() => active.classList.add('section-active'), 10); // Trigger anim
+            
+            if(id !== 'hero') stopCamera(); // Stop camera if leaving home
+            
+            // Load Mock Data
+            if(id === 'history') loadHistory();
+            if(id === 'ngos') loadNGOs();
+            if(id === 'events') loadEvents();
+        }
+
+        // 2. Camera Logic (MediaDevices API)
+        let stream = null;
+        async function toggleCamera() {
+            const wrapper = document.getElementById('cameraFeed');
+            const btnText = document.getElementById('btnText');
+            const video = document.getElementById('videoElement');
+
+            if (wrapper.style.display === 'block') {
+                // Stop
+                stopCamera();
+            } else {
+                // Start
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    video.srcObject = stream;
+                    wrapper.style.display = 'block';
+                    btnText.innerText = "Stop Camera";
+                } catch (err) {
+                    alert("Error accessing camera: " + err.message);
+                }
+            }
+        }
+
+        function stopCamera() {
+            const wrapper = document.getElementById('cameraFeed');
+            const btnText = document.getElementById('btnText');
+            const video = document.getElementById('videoElement');
+            
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+            wrapper.style.display = 'none';
+            if(btnText) btnText.innerText = "Start Camera";
+        }
+
+        // 3. Theme Logic (Practical 21)
+        function changeTheme(color) {
+            const sphereMat = sphere.material;
+            const body = document.body;
+            
+            if(color === 'red') {
+                body.style.background = 'linear-gradient(to right, #4a0000, #1a0000)'; // Red tint
+                particlesMaterial.color.setHex(0xff4757);
+            } else if (color === 'green') {
+                body.style.background = 'linear-gradient(to right, #002400, #001a00)'; // Green tint
+                particlesMaterial.color.setHex(0x2ed573);
+            } else {
+                body.style.background = '#1a1a1a'; // Dark default
+                particlesMaterial.color.setHex(0x00f260);
+            }
+        }
+
+        // 4. Mock Data Functions (DOM Manipulation - Unit 9)
+        function loadHistory() {
+            const data = [
+                { sign: "HELLO", count: 15, time: "2 mins ago" },
+                { sign: "THANKS", count: 8, time: "1 hour ago" },
+                { sign: "GOOD MORNING", count: 3, time: "Yesterday" }
+            ];
+            const tbody = document.getElementById('historyData');
+            tbody.innerHTML = data.map(d => `<tr><td>${d.sign}</td><td>${d.count}</td><td>${d.time}</td></tr>`).join('');
+        }
+
+        function loadNGOs() {
+            const ngos = ["Silent Voice Foundation", "Hands that Speak", "Deaf Aid Global"];
+            const container = document.getElementById('ngoData');
+            container.innerHTML = ngos.map(n => `
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark text-white border-secondary h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-building fa-3x mb-3 text-info"></i>
+                            <h5 class="card-title">${n}</h5>
+                            <button class="btn btn-sm btn-outline-info mt-2">View Profile</button>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function loadEvents() {
+            const container = document.getElementById('eventData');
+            container.innerHTML = '<div class="col-12 text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading events...</p></div>';
+            
+            fetch('http://127.0.0.1:5000/api/events')
+                .then(res => res.json())
+                .then(events => {
+                    if (events.length === 0) {
+                        container.innerHTML = '<div class="col-12 text-center text-muted"><p>No events available yet.</p></div>';
+                        return;
+                    }
+                    
+                    container.innerHTML = events.map(event => `
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-dark bg-opacity-50 border-success text-white h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-success">${event.title}</h5>
+                                    <p class="card-text"><small>${event.description || 'No description'}</small></p>
+                                    <p class="mb-1"><i class="fas fa-calendar"></i> ${new Date(event.event_date).toLocaleDateString()}</p>
+                                    <p class="mb-1"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                                    <p class="mb-0 text-muted"><small>By: ${event.ngo_name || 'N/A'}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => {
+                    console.error('Error loading events:', error);
+                    container.innerHTML = '<div class="col-12 text-center text-danger"><p>Failed to load events.</p></div>';
+                });
+        }
+
+        // Search Mock
+        // Dictionary Search
+        async function searchDict() {
+            const val = document.getElementById('searchBox').value.trim();
+            const res = document.getElementById('dictResult');
+            
+            if(!val) {
+                res.style.display = 'none';
+                return;
+            }
+            
+            res.style.display = 'block';
+            res.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Searching...</p></div>';
+            
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/dictionary?search=${encodeURIComponent(val)}`);
+                const signs = await response.json();
+                
+                if (response.ok && signs.length > 0) {
+                    res.innerHTML = signs.map(sign => `
+                        <div class="mb-4 p-4 border border-secondary rounded bg-dark bg-opacity-50">
+                            <h3 class="text-white mb-3">
+                                <span class="badge bg-primary me-2">${sign.starting_letter}</span>
+                                <span class="text-warning">${sign.word}</span>
+                            </h3>
+                            <div class="bg-secondary p-5 rounded text-center">
+                                ${sign.video_path ? 
+                                    `<video controls class="w-100" style="max-width: 500px;">
+                                        <source src="${sign.video_path}" type="video/mp4">
+                                        Your browser does not support video.
+                                    </video>` : 
+                                    '<p class="text-muted">Video not available</p>'
+                                }
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    res.innerHTML = '<div class="alert alert-warning">No signs found for your search.</div>';
+                }
+            } catch (error) {
+                console.error('Error searching dictionary:', error);
+                res.innerHTML = '<div class="alert alert-danger">Failed to search dictionary. Please try again.</div>';
+            }
+        }
+
+        // Form Submit
+        async function handleForm(e) {
+            e.preventDefault();
+            
+            const formData = {
+                org_name: document.getElementById('org_name').value,
+                contact_person: document.getElementById('contact_person').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                purpose: document.getElementById('purpose').value,
+                description: document.getElementById('description').value,
+                city: document.getElementById('city').value
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/ngo/partner', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('partnerSuccess').style.display = 'block';
+                    document.getElementById('partnerError').style.display = 'none';
+                    document.getElementById('partnerForm').reset();
+                    // Unit 10: LocalStorage
+                    localStorage.setItem('lastPartnerRequest', new Date().toISOString());
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        document.getElementById('partnerSuccess').style.display = 'none';
+                    }, 5000);
+                } else {
+                    document.getElementById('partnerError').style.display = 'block';
+                    document.getElementById('partnerSuccess').style.display = 'none';
+                    document.getElementById('partnerError').textContent = result.error || 'Error submitting request. Please try again.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('partnerError').style.display = 'block';
+                document.getElementById('partnerSuccess').style.display = 'none';
+                document.getElementById('partnerError').textContent = 'Failed to connect to server. Please try again.';
+            }
+        }
+
+    </script>
+
+    <!-- Event Posting Section -->
+    <script>
+        function postEvent() {
+            const formData = {
+                ngo_id: document.getElementById("ngo_id").value,
+                title: document.getElementById("title").value,
+                description: document.getElementById("event_description").value,
+                event_date: document.getElementById("event_date").value,
+                location: document.getElementById("location").value
+            };
+
+            console.log("Submitting event data:", formData);
+
+            // Validate required fields
+            if (!formData.ngo_id || !formData.title || !formData.event_date || !formData.location) {
+                alert("Please fill in all required fields");
+                return;
+            }
+
+            fetch("http://127.0.0.1:5000/api/ngo/post-event", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(res => {
+                console.log("Response status:", res.status);
+                return res.json();
+            })
+            .then(data => {
+                console.log("Response data:", data);
+                if (data.message) {
+                    alert(data.message);
+                    // Clear form
+                    document.getElementById("ngo_id").value = "";
+                    document.getElementById("title").value = "";
+                    document.getElementById("event_description").value = "";
+                    document.getElementById("event_date").value = "";
+                    document.getElementById("location").value = "";
+                    // Reload events list
+                    loadEvents();
+                    // Close form
+                    togglePostForm();
+                } else if (data.error) {
+                    alert("Error: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to post event. Check console for details.");
+            });
+        }
+
+        if (role === "NGO") {
+    document.getElementById("postEventBtn").style.display = "block";
+} else {
+    document.getElementById("postEventBtn").style.display = "none";
+}
+
+    </script>
+</body>
+</html>

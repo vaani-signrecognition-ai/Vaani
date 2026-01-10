@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NGO Requests</title>
+</head>
+<body>
+
+<h2>NGO Partnership Requests</h2>
+
+<table border="1">
+    <thead>
+
+        <tr>
+            <th>Org Name</th>
+            <th>Contact</th>
+            <th>Email</th>
+            <th>Purpose</th>
+            <th>City</th>
+            <th>Status</th>
+            <th>action</th>
+
+        </tr>
+    </thead>
+    <tbody id="requestsTable"></tbody>
+</table>
+
+<script>
+function takeAction(requestId, action) {
+    if (!confirm(`Are you sure you want to ${action.toLowerCase()} this request?`)) {
+        return;
+    }
+
+    fetch("http://127.0.0.1:5000/api/admin/ngo-request/action", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            request_id: requestId,
+            action: action
+        })
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return res.json();
+    })
+    .then(data => {
+        if (data.temp_password) {
+            alert(`NGO Approved Successfully!\n\nEmail: Will be shown in table\nTemporary Password: ${data.temp_password}\n\nPlease save this password and share it with the NGO.`);
+        } else {
+            alert(data.message || 'Action completed successfully');
+        }
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to process request. Please try again.');
+    });
+}
+
+fetch("http://127.0.0.1:5000/api/admin/ngo-requests")
+.then(res => res.json())
+.then(data => {
+    const table = document.getElementById("requestsTable");
+
+    data.forEach(req => {
+        const row = `
+            <tr>
+                <td>${req.org_name}</td>
+                <td>${req.contact_person}</td>
+                <td>${req.email}</td>
+                <td>${req.purpose}</td>
+                <td>${req.city}</td>
+                <td>${req.status}</td>
+                <td>
+                    <button onclick="takeAction(${req.request_id}, 'APPROVED')">
+                        Approve
+                    </button>
+                    <button onclick="takeAction(${req.request_id}, 'REJECTED')">
+                        Reject
+                    </button>
+                </td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+});
+</script>
+
+
+
+</body>
+</html>

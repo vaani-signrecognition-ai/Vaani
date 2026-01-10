@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VAANI | Sign Recognition</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">VAANI</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="recognize.html">Sign Recognition</a></li>
+    <li><a href="ngo.html">NGOs</a></li>
+    <li><a href="events.html">Events</a></li>
+  </ul>
+</nav>
+
+<section class="recognize">
+  <h2>Sign Recognition</h2>
+
+  <video id="video" autoplay></video>
+  <canvas id="canvas" hidden></canvas>
+
+  <div class="buttons">
+    <button onclick="startCamera()">Start Camera</button>
+    <button onclick="predictSign()">Predict Sign</button>
+    <button onclick="speak()">Speak</button>
+  </div>
+
+  <h3>Detected Sign:</h3>
+  <p id="result">---</p>
+</section>
+
+<script src="js/recognize.js"></script>
+</body>
+</html>
