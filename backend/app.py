@@ -1,12 +1,16 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 from datetime import datetime
 import random
 import string
+from routes import auth
 from werkzeug.security import generate_password_hash, check_password_hash
+from utils.email_sender import send_approval_email, send_rejection_email
+from models.word_predict import predict_word
 
 
 app = Flask(__name__)
@@ -23,6 +27,23 @@ def get_db():
 def home():
     return render_template("index.html")
 
+@app.route("/ngo.html")
+def ngo():
+    return render_template("ngo.html")
+
+@app.route("/events.html")
+def events():
+    return render_template("events.html")
+
+# ---------------- SERVE JS/CSS FROM TEMPLATES ----------------
+@app.route("/js/<path:filename>")
+def serve_js(filename):
+    return send_from_directory(os.path.join(app.template_folder, 'js'), filename)
+
+@app.route("/css/<path:filename>")
+def serve_css(filename):
+    return send_from_directory(os.path.join(app.template_folder, 'css'), filename)
+
 # ---------------- HEALTH CHECK ----------------
 @app.route("/api/health")
 def health():
@@ -34,12 +55,22 @@ def get_ngos():
         conn = get_db()
         cur = conn.cursor()
 
+        # Use the approved_ngos view or join tables
         cur.execute("""
-            SELECT ngo_id, org_name, contact_person, phone, 
-                   email, description, city, status
-            FROM ngo_requests
-            WHERE status = 'APPROVED'
-            ORDER BY submitted_at DESC
+            SELECT 
+                n.ngo_id,
+                nr.org_name,
+                nr.contact_person,
+                nr.phone,
+                nr.email,
+                nr.description,
+                nr.city,
+                nr.status,
+                n.created_at
+            FROM ngo_accounts n
+            INNER JOIN ngo_requests nr ON n.request_id = nr.request_id
+            WHERE nr.status = 'APPROVED' AND n.is_active = TRUE
+            ORDER BY n.created_at DESC
         """)
 
         ngos = cur.fetchall()
@@ -348,10 +379,11 @@ def handle_ngo_request_action():
         # If approved → create NGO account
         if action == "APPROVED":
             cur.execute("""
-                SELECT email FROM ngo_requests WHERE request_id = %s
+                SELECT email, org_name FROM ngo_requests WHERE request_id = %s
             """, (request_id,))
             result = cur.fetchone()
             email = result['email']
+            org_name = result['org_name']
 
             temp_password = "VAANI@" + ''.join(
                 random.choices(string.digits, k=4)
@@ -360,13 +392,16 @@ def handle_ngo_request_action():
             password_hash = generate_password_hash(temp_password)
 
             cur.execute("""
-                INSERT INTO ngo_accounts (request_id, email, password_hash)
-                VALUES (%s, %s, %s)
+                INSERT INTO ngo_accounts (request_id, email, password_hash, is_active)
+                VALUES (%s, %s, %s, TRUE)
             """, (request_id, email, password_hash))
 
             conn.commit()
             cur.close()
             conn.close()
+
+            # Send approval email
+            send_approval_email(email, org_name, temp_password)
 
             return jsonify({
                 "message": "NGO approved and account created",
@@ -376,6 +411,16 @@ def handle_ngo_request_action():
         conn.commit()
         cur.close()
         conn.close()
+        
+        # Send rejection email if rejected
+        if action == "REJECTED":
+            cur.execute("""
+                SELECT email, org_name FROM ngo_requests WHERE request_id = %s
+            """, (request_id,))
+            result = cur.fetchone()
+            if result:
+                send_rejection_email(result['email'], result['org_name'])
+        
         return jsonify({"message": "NGO request rejected"}), 200
 
     except Exception as e:
@@ -422,6 +467,97 @@ def ngo_login():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# ---------------- ML PREDICTION ENDPOINTS ----------------
+@app.route("/api/predict/word", methods=["POST"])
+def predict_word_endpoint():
+    """
+    Predict ISL word from image
+    Expects: multipart/form-data with 'image' file
+    Returns: { "word": "hello", "confidence": 0.95 }
+    """
+    try:
+        # Lazy import to avoid loading TensorFlow at startup
+        from models.word_predict import predict_word
+        
+        if 'image' not in request.files:
+            return jsonify({"error": "No image provided"}), 400
+        
+        image_file = request.files['image']
+        if image_file.filename == '':
+            return jsonify({"error": "Empty filename"}), 400
+        
+        # Read image bytes
+        image_bytes = image_file.read()
+        
+        # Get prediction
+        word, confidence = predict_word(image_bytes)
+        
+        return jsonify({
+            "word": word,
+            "confidence": confidence
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/predict/alphabet", methods=["POST"])
+def predict_alphabet_endpoint():
+    """
+    Predict ISL alphabet/letter from image
+    Expects: multipart/form-data with 'image' file
+    Returns: { "letter": "A", "confidence": 0.98 }
+    """
+    try:
+        # Lazy import to avoid loading TensorFlow at startup
+        from models.alpha_predict import predict_alphabet
+        
+        if 'image' not in request.files:
+            return jsonify({"error": "No image provided"}), 400
+        
+        image_file = request.files['image']
+        if image_file.filename == '':
+            return jsonify({"error": "Empty filename"}), 400
+        
+        # Read image bytes
+        image_bytes = image_file.read()
+        
+        # Get prediction
+        letter, confidence = predict_alphabet(image_bytes)
+        
+        return jsonify({
+            "letter": letter,
+            "confidence": confidence
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ---------------- ERROR HANDLERS ----------------
+@app.errorhandler(404)
+def page_not_found(e):
+    """Handle 404 errors - page not found"""
+    # Check if request is for API endpoint
+    if request.path.startswith('/api/'):
+        return jsonify({
+            "error": "Endpoint not found",
+            "message": "The requested API endpoint does not exist",
+            "status": 404
+        }), 404
+    # Return HTML template for regular pages
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    """Handle 500 errors - internal server error"""
+    # Check if request is for API endpoint
+    if request.path.startswith('/api/'):
+        return jsonify({
+            "error": "Internal server error",
+            "message": "An unexpected error occurred. Please try again later.",
+            "status": 500
+        }), 500
+    # Return HTML template for regular pages
+    return render_template('500.html'), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5000)
