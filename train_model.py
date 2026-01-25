@@ -56,7 +56,7 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    EPOCHS = 30
+    EPOCHS = 30 
 
     for epoch in range(EPOCHS):
         correct = 0
