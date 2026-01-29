@@ -10,11 +10,12 @@ load_dotenv()
 class Config:
     """Base configuration"""
     # Flask settings
-    SECRET_KEY = os.getenv("SECRET_KEY", "vaani-secret-key-change-in-production")
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev-key")
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
     
-    # Database
-    DATABASE_URL = os.getenv("DATABASE_URL")
+    # Database - SQLAlchemy
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Email settings
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")

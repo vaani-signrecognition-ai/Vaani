@@ -764,18 +764,35 @@
         }
 
         function loadNGOs() {
-            const ngos = ["Silent Voice Foundation", "Hands that Speak", "Deaf Aid Global"];
             const container = document.getElementById('ngoData');
-            container.innerHTML = ngos.map(n => `
-                <div class="col-md-4 mb-3">
-                    <div class="card bg-dark text-white border-secondary h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-building fa-3x mb-3 text-info"></i>
-                            <h5 class="card-title">${n}</h5>
-                            <button class="btn btn-sm btn-outline-info mt-2">View Profile</button>
-                        </div>
-                    </div>
-                </div>`).join('');
+            container.innerHTML = '<div class="col-12 text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading NGO partners...</p></div>';
+            
+            fetch('http://127.0.0.1:5000/api/ngos')
+                .then(res => res.json())
+                .then(ngos => {
+                    if (ngos.length === 0) {
+                        container.innerHTML = '<div class="col-12 text-center text-muted"><p>No NGO partners yet.</p></div>';
+                        return;
+                    }
+                    
+                    container.innerHTML = ngos.map(ngo => `
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-dark text-white border-secondary h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-building fa-3x mb-3 text-info"></i>
+                                    <h5 class="card-title">${ngo.ngo_name}</h5>
+                                    <p class="mb-1"><small><i class="fas fa-envelope"></i> ${ngo.email}</small></p>
+                                    <p class="mb-1"><small><i class="fas fa-phone"></i> ${ngo.phone || 'N/A'}</small></p>
+                                    <p class="mb-1"><small><i class="fas fa-map-marker-alt"></i> ${ngo.city || 'N/A'}</small></p>
+                                    <button class="btn btn-sm btn-outline-info mt-2">View Profile</button>
+                                </div>
+                            </div>
+                        </div>`).join('');
+                })
+                .catch(err => {
+                    console.error('Error loading NGOs:', err);
+                    container.innerHTML = '<div class="col-12 text-center text-danger"><p>Failed to load NGO partners.</p></div>';
+                });
         }
 
         function loadEvents() {
