@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Partnership - VAANI</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .contact-form-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            padding: 40px 20px;
+        }
+
+        .form-card1 {
+            background: linear-gradient(163deg, #64ffda, #64ffda);
+            border-radius: 22px;
+            padding: 3px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .form-card2 {
+            background-color: #171717;
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .ngo-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            color: white;
+        }
+
+        .form-heading {
+            text-align: center;
+            color: #64ffda;
+            margin-bottom: 5px;
+        }
+
+        .form-subheading {
+            text-align: center;
+            color: #ccd6f6;
+            margin-bottom: 25px;
+        }
+
+        .field-label {
+            color: #64ffda;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-field {
+            background-color: #171717;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: inset 2px 5px 10px rgb(5,5,5);
+        }
+
+        .input-field {
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            color: #ccd6f6;
+        }
+
+        textarea.input-field {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .sendMessage-btn {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #64ffda;
+            background: transparent;
+            color: #64ffda;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .sendMessage-btn:hover {
+            background: #64ffda;
+            color: black;
+        }
+
+        .form-success-message {
+            display: none;
+            margin-top: 20px;
+            background: rgba(46,213,115,0.15);
+            border: 1px solid #2ed573;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #2ed573;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contact-form-page">
+    <div class="form-card1">
+        <div class="form-card2">
+
+            <form id="ngoForm" class="ngo-form">
+                <h2 class="form-heading">NGO Partnership Application</h2>
+                <p class="form-subheading">
+                    Join hands with VAANI to promote Indian Sign Language accessibility
+                </p>
+
+                <div>
+                    <label class="field-label">Organization Name *</label>
+                    <div class="form-field">
+                        <input id="organization_name" class="input-field" required>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div>
+                        <label class="field-label">Contact Person *</label>
+                        <div class="form-field">
+                            <input id="contact_person_name" class="input-field" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="field-label">Contact Number *</label>
+                        <div class="form-field">
+                            <input id="contact_number" class="input-field" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="field-label">Email *</label>
+                    <div class="form-field">
+                        <input id="email" type="email" class="input-field" required>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div>
+                        <label class="field-label">Purpose *</label>
+                        <div class="form-field">
+                            <input id="purpose" class="input-field" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="field-label">City *</label>
+                        <div class="form-field">
+                            <input id="city" class="input-field" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="field-label">Description *</label>
+                    <div class="form-field">
+                        <textarea id="description" class="input-field" required></textarea>
+                    </div>
+                </div>
+
+                <button class="sendMessage-btn" type="submit">
+                    <i class="fas fa-paper-plane me-2"></i> Submit Application
+                </button>
+
+                <div id="successMessage" class="form-success-message">
+                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                    <h5>Application submitted successfully!</h5>
+                    <p>You will receive an email after admin approval.</p>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const ngoForm = document.getElementById("ngoForm");
+    const successMessage = document.getElementById("successMessage");
+    
+    ngoForm.addEventListener("submit", async function(e) {
+        e.preventDefault();
+    
+        const data = {
+            org_name: document.getElementById("organization_name").value.trim(),
+            contact_person: document.getElementById("contact_person_name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            phone: document.getElementById("contact_number").value.trim(),
+            city: document.getElementById("city").value.trim(),
+            purpose: document.getElementById("purpose").value.trim(),
+            description: document.getElementById("description").value.trim()
+        };
+    
+        if (!/^\d{10}$/.test(data.phone)) {
+            alert("Phone number must be exactly 10 digits");
+            return;
+        }
+    
+        if (data.description.length < 10) {
+            alert("Description must be at least 10 characters");
+            return;
+        }
+    
+        try {
+            const res = await fetch("/api/ngo/partner", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+    
+            const result = await res.json();
+    
+            if (res.ok && result.success) {
+                successMessage.style.display = "block";
+                ngoForm.reset();
+            } else {
+                alert(result.error || "Submission failed");
+            }
+    
+        } catch (err) {
+            alert("Server error. Try again later.");
+        }
+    });
+    </script>
+    
+
+</body>
+</html>

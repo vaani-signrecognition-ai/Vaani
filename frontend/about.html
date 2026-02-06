@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About VAANI - Indian Sign Language Learning Platform</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Return to Website Button (only shown when modal is open) -->
+    <div class="return-to-website" id="returnToWebsite" style="display: none;">
+        <button class="btn-return" id="returnBtn">
+            <i class="fas fa-arrow-left"></i>
+            Return to Website
+        </button>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="index.html">
+                        <div class="logo-container">
+                            <div class="logo-placeholder" style="margin-right: 15px;">
+                                <img src="logo.jpg.jpeg" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover;">
+                            </div>
+                            <div class="logo-text">
+                                <h1 class="main-logo">VAANI</h1>
+                                <p class="tagline">Voice for Voiceless</p>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="about.html">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="dictionary.html">Dictionary</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="ngo-partners.html">NGO Partners</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="events.html">Events</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="contact.html">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>About VAANI</h1>
+            <p>Learn about our mission, vision, and commitment to Indian Sign Language education</p>
+        </div>
+    </section>
+
+    <!-- About Content Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- About Dropdown Accordion -->
+                    <div class="accordion" id="aboutAccordion">
+                        
+                        <!-- About Us Section -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <i class="fas fa-info-circle me-3"></i>
+                                    About VAANI
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#aboutAccordion">
+                                <div class="accordion-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                                            <div class="about-icon">
+                                                <i class="fas fa-hands"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h3 class="mb-3">Empowering Through Sign Language</h3>
+                                            <p>VAANI, which means "Voice" in Hindi, is a pioneering initiative dedicated to promoting Indian Sign Language (ISL) accessibility and education. Founded with the vision of creating an inclusive society, we bridge the communication gap between the deaf and hearing communities.</p>
+                                            <p>Our platform leverages cutting-edge technology to provide interactive learning experiences, real-time feedback, and comprehensive resources for mastering ISL. We collaborate with NGOs, educational institutions, and government bodies to make sign language education accessible to everyone.</p>
+                                            <div class="mt-4">
+                                                <h5>Our Commitment:</h5>
+                                                <ul class="feature-list">
+                                                    <li>Promote Indian Sign Language as the primary mode of communication for the deaf community</li>
+                                                    <li>Provide accessible and engaging learning resources</li>
+                                                    <li>Foster inclusivity through technology and community engagement</li>
+                                                    <li>Support deaf empowerment and employment opportunities</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Vision Section -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <i class="fas fa-eye me-3"></i>
+                                    Our Vision
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#aboutAccordion">
+                                <div class="accordion-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                                            <div class="vision-icon">
+                                                <i class="fas fa-bullseye"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h3 class="mb-3">Creating an Inclusive Society</h3>
+                                            <p>We envision a world where Indian Sign Language is universally recognized, respected, and integrated into all aspects of society. Our vision extends beyond language education to create a truly inclusive environment where every individual, regardless of hearing ability, can communicate freely and participate fully in social, educational, and professional spheres.</p>
+                                            <div class="vision-goals mt-4">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="goal-card">
+                                                            <i class="fas fa-graduation-cap"></i>
+                                                            <h5>Educational Integration</h5>
+                                                            <p>Make ISL a standard part of school curricula nationwide</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="goal-card">
+                                                            <i class="fas fa-briefcase"></i>
+                                                            <h5>Professional Inclusion</h5>
+                                                            <p>Create employment opportunities through sign language proficiency</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="goal-card">
+                                                            <i class="fas fa-universal-access"></i>
+                                                            <h5>Universal Accessibility</h5>
+                                                            <p>Ensure all public services are accessible through ISL</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="goal-card">
+                                                            <i class="fas fa-handshake"></i>
+                                                            <h5>Community Building</h5>
+                                                            <p>Foster stronger connections between deaf and hearing communities</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mission Section -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <i class="fas fa-bullseye me-3"></i>
+                                    Our Mission
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#aboutAccordion">
+                                <div class="accordion-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                                            <div class="mission-icon">
+                                                <i class="fas fa-flag-checkered"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h3 class="mb-3">Building Bridges Through Communication</h3>
+                                            <p>Our mission is to democratize Indian Sign Language education through innovative technology, community engagement, and strategic partnerships. We are committed to breaking down communication barriers and empowering both the deaf community and hearing individuals to connect, learn, and grow together.</p>
+                                            
+                                            <div class="mission-objectives mt-4">
+                                                <h5 class="mb-3">Core Objectives:</h5>
+                                                <div class="objective-list">
+                                                    <div class="objective-item">
+                                                        <div class="objective-number">1</div>
+                                                        <div class="objective-content">
+                                                            <h6>Develop Accessible Learning Tools</h6>
+                                                            <p>Create user-friendly platforms and resources that make ISL learning engaging and effective for people of all ages and backgrounds</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="objective-item">
+                                                        <div class="objective-number">2</div>
+                                                        <div class="objective-content">
+                                                            <h6>Promote ISL Standardization</h6>
+                                                            <p>Work with linguistic experts and the deaf community to establish and promote standardized Indian Sign Language</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="objective-item">
+                                                        <div class="objective-number">3</div>
+                                                        <div class="objective-content">
+                                                            <h6>Foster Community Engagement</h6>
+                                                            <p>Organize workshops, events, and awareness campaigns to bring together deaf and hearing communities</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="objective-item">
+                                                        <div class="objective-number">4</div>
+                                                        <div class="objective-content">
+                                                            <h6>Advocate for Policy Changes</h6>
+                                                            <p>Collaborate with government bodies to implement policies that recognize and support sign language rights</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="objective-item">
+                                                        <div class="objective-number">5</div>
+                                                        <div class="objective-content">
+                                                            <h6>Provide Professional Development</h6>
+                                                            <p>Offer certification programs and training for educators, interpreters, and professionals working with the deaf community</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="logo-container mb-3">
+                        <img src="logo.jpg.jpeg" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h3 class="main-logo" style="color: white; font-size: 1.8rem;">VAANI</h3>
+                            <p class="tagline" style="color: #cccccc;">Voice for Voiceless</p>
+                        </div>
+                    </div>
+                    <p>VAANI is an initiative to promote Indian Sign Language learning and accessibility for the deaf and hard-of-hearing community.</p>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="dictionary.html">Dictionary</a></li>
+                        <li><a href="ngo-partners.html">NGO Partners</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="footer-links">
+                        <li><a href="dictionary.html">ISL Dictionary</a></li>
+                        <li><a href="events.html">Upcoming Events</a></li>
+                        <li><a href="ngo-partners.html">Partner NGOs</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Contact Us</h5>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-envelope"></i> contact@vaani.org</p>
+                        <p><i class="fas fa-envelope"></i> partnerships@vaani.org</p>
+                        <p><i class="fas fa-phone"></i> +91 11 2345 6789</p>
+                        <p><i class="fas fa-globe"></i> www.vaani.org</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Follow Us</h6>
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-youtube fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 VAANI - Voice for Voiceless. All rights reserved.</p>
+                <p class="small">This website follows the accessibility guidelines of the Government of India.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        backToTop.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Set active nav link
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        
+        // Accordion Animation Enhancement
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+        
+        accordionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Close all other accordion items
+                const allItems = document.querySelectorAll('.accordion-collapse');
+                allItems.forEach(item => {
+                    if (item !== document.querySelector(this.getAttribute('data-bs-target'))) {
+                        bootstrap.Collapse.getInstance(item)?.hide();
+                    }
+                });
+            });
+        });
+        
+        // Initialize
+        console.log('VAANI About Page Ready');
+    </script>
+    
+    <!-- Additional CSS for About Page -->
+    <style>
+        /* About Page Specific Styles */
+        .about-icon,
+        .vision-icon,
+        .mission-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(161, 196, 253, 0.3);
+        }
+        
+        .vision-icon {
+            background: var(--gradient-2);
+        }
+        
+        .mission-icon {
+            background: var(--gradient-3);
+        }
+        
+        .goal-card {
+            background: rgba(161, 196, 253, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .goal-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 25px rgba(161, 196, 253, 0.2);
+        }
+        
+        .goal-card i {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .goal-card h5 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+        
+        .goal-card p {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .objective-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .objective-number {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .objective-content h6 {
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+        
+        .objective-content p {
+            color: var(--text-color);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        /* Accordion Customization */
+        .accordion-button {
+            background: var(--gradient-1);
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            padding: 20px 25px;
+            border: none;
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background: var(--gradient-2);
+            color: white;
+            box-shadow: none;
+        }
+        
+        .accordion-button:focus {
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .accordion-button::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+        
+        .accordion-button:not(.collapsed)::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+        
+        .accordion-body {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .accordion-item {
+            border: 2px solid rgba(161, 196, 253, 0.3);
+            border-radius: 10px !important;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .accordion-item:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<<<<<<< Updated upstream
+=======
+# Core Flask Dependencies
+Flask==3.1.2
+Flask-CORS==6.0.2
+Flask-SQLAlchemy==3.1.1
+Werkzeug==3.1.5
+python-dotenv==1.2.1
+
+# Database (PostgreSQL via Neon)
+SQLAlchemy==2.0.46
+psycopg2-binary==2.9.9
+
+# Machine Learning (Optional - not used in backend phase)
+tensorflow==2.15.0
+numpy==1.24.3
+opencv-python==4.8.1.78
+torch>=2.0.0
+mediapipe>=0.10.0
+h5py>=3.9.0
+>>>>>>> Stashed changes
