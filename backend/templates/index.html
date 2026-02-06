@@ -280,8 +280,33 @@
             <!-- Camera Feed -->
             <div class="camera-wrapper mx-auto" id="cameraFeed">
                 <video id="videoElement" autoplay playsinline></video>
+                <canvas id="captureCanvas" hidden></canvas>
                 <div class="position-absolute bottom-0 w-100 p-2 text-center bg-dark bg-opacity-50">
                     <small class="text-white"><i class="fas fa-circle text-danger me-1 blink"></i> Live AI Detection Active</small>
+                </div>
+            </div>
+            
+            <!-- Prediction Controls (Show when camera is active) -->
+            <div id="predictionControls" style="display: none; margin-top: 20px;">
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                    <button class="btn btn-primary" onclick="predictWord()">
+                        <i class="fas fa-hand-paper me-2"></i>Predict Word
+                    </button>
+                    <button class="btn btn-warning" onclick="predictAlphabet()">
+                        <i class="fas fa-font me-2"></i>Predict Letter
+                    </button>
+                    <button class="btn btn-success" onclick="speakResult()">
+                        <i class="fas fa-volume-up me-2"></i>Speak
+                    </button>
+                </div>
+                
+                <!-- Result Display -->
+                <div id="predictionResult" class="bg-dark bg-opacity-75 rounded p-3 mx-auto" style="max-width: 500px; display: none;">
+                    <div class="text-center">
+                        <span id="predictionType" class="badge bg-info mb-2"></span>
+                        <h3 id="predictionText" class="text-white mb-2">---</h3>
+                        <p id="predictionConfidence" class="text-muted mb-0"></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -531,8 +556,19 @@
 
         // 2. Camera Logic (MediaDevices API)
         let stream = null;
+        let currentPrediction = "---";
+
+        // Utility function to convert snake_case to human-readable text
+        function prettifyLabel(label) {
+            return label
+                .replaceAll("_", " ")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+        
         async function toggleCamera() {
             const wrapper = document.getElementById('cameraFeed');
+            const controls = document.getElementById('predictionControls');
             const btnText = document.getElementById('btnText');
             const video = document.getElementById('videoElement');
 
@@ -542,9 +578,12 @@
             } else {
                 // Start
                 try {
-                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { width: 640, height: 480 } 
+                    });
                     video.srcObject = stream;
                     wrapper.style.display = 'block';
+                    controls.style.display = 'block';
                     btnText.innerText = "Stop Camera";
                 } catch (err) {
                     alert("Error accessing camera: " + err.message);
@@ -554,6 +593,7 @@
 
         function stopCamera() {
             const wrapper = document.getElementById('cameraFeed');
+            const controls = document.getElementById('predictionControls');
             const btnText = document.getElementById('btnText');
             const video = document.getElementById('videoElement');
             
@@ -562,7 +602,137 @@
                 video.srcObject = null;
             }
             wrapper.style.display = 'none';
+            controls.style.display = 'none';
             if(btnText) btnText.innerText = "Start Camera";
+        }
+        
+        // Capture image from video
+        async function captureImage() {
+            const video = document.getElementById('videoElement');
+            const canvas = document.getElementById('captureCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+            
+            return new Promise((resolve) => {
+                canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.95);
+            });
+        }
+        
+        // Predict Word
+        async function predictWord() {
+            if (!stream) {
+                alert("Please start the camera first!");
+                return;
+            }
+            
+            const resultDiv = document.getElementById('predictionResult');
+            const textEl = document.getElementById('predictionText');
+            const confEl = document.getElementById('predictionConfidence');
+            const typeEl = document.getElementById('predictionType');
+            
+            textEl.innerText = "Predicting...";
+            confEl.innerText = "";
+            resultDiv.style.display = "block";
+            
+            try {
+                const blob = await captureImage();
+                const formData = new FormData();
+                formData.append("image", blob);
+                
+                const response = await fetch("/api/predict/word", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    textEl.innerText = "Error: " + data.error;
+                    typeEl.innerText = "";
+                } else {
+                    currentPrediction = data.word;
+                    
+                    // Handle unknown/low confidence predictions
+                    if (data.word === "unknown") {
+                        textEl.innerText = "Please try again";
+                        confEl.innerText = `Confidence: ${(data.confidence * 100).toFixed(1)}%`;
+                        typeEl.innerText = "";
+                    } else {
+                        const cleanText = prettifyLabel(data.word);
+                        textEl.innerText = cleanText;
+                        confEl.innerText = `Confidence: ${(data.confidence * 100).toFixed(1)}%`;
+                        typeEl.innerText = "Word Prediction";
+                        typeEl.className = "badge bg-primary mb-2";
+                    }
+                }
+            } catch (error) {
+                console.error("Prediction error:", error);
+                textEl.innerText = "Error: " + error.message;
+                typeEl.innerText = "";
+            }
+        }
+        
+        // Predict Alphabet/Number
+        async function predictAlphabet() {
+            if (!stream) {
+                alert("Please start the camera first!");
+                return;
+            }
+            
+            const resultDiv = document.getElementById('predictionResult');
+            const textEl = document.getElementById('predictionText');
+            const confEl = document.getElementById('predictionConfidence');
+            const typeEl = document.getElementById('predictionType');
+            
+            textEl.innerText = "Predicting...";
+            confEl.innerText = "";
+            resultDiv.style.display = "block";
+            
+            try {
+                const blob = await captureImage();
+                const formData = new FormData();
+                formData.append("image", blob);
+                
+                const response = await fetch("/api/predict/alphabet", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    textEl.innerText = "Error: " + data.error;
+                    typeEl.innerText = "";
+                } else {
+                    currentPrediction = data.letter;
+                    textEl.innerText = data.letter;
+                    confEl.innerText = `Confidence: ${(data.confidence * 100).toFixed(1)}%`;
+                    typeEl.innerText = "Letter/Number Prediction";
+                    typeEl.className = "badge bg-warning mb-2";
+                }
+            } catch (error) {
+                console.error("Prediction error:", error);
+                textEl.innerText = "Error: " + error.message;
+                typeEl.innerText = "";
+            }
+        }
+        
+        // Speak Result
+        function speakResult() {
+            if (currentPrediction === "---" || currentPrediction === "Predicting..." || currentPrediction === "unknown") {
+                alert("Please make a prediction first!");
+                return;
+            }
+            
+            // Speak the prettified version (without underscores)
+            const cleanText = prettifyLabel(currentPrediction);
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'en-IN';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
         }
 
         // 3. Theme Logic (Practical 21)
@@ -594,18 +764,35 @@
         }
 
         function loadNGOs() {
-            const ngos = ["Silent Voice Foundation", "Hands that Speak", "Deaf Aid Global"];
             const container = document.getElementById('ngoData');
-            container.innerHTML = ngos.map(n => `
-                <div class="col-md-4 mb-3">
-                    <div class="card bg-dark text-white border-secondary h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-building fa-3x mb-3 text-info"></i>
-                            <h5 class="card-title">${n}</h5>
-                            <button class="btn btn-sm btn-outline-info mt-2">View Profile</button>
-                        </div>
-                    </div>
-                </div>`).join('');
+            container.innerHTML = '<div class="col-12 text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading NGO partners...</p></div>';
+            
+            fetch('http://127.0.0.1:5000/api/ngos')
+                .then(res => res.json())
+                .then(ngos => {
+                    if (ngos.length === 0) {
+                        container.innerHTML = '<div class="col-12 text-center text-muted"><p>No NGO partners yet.</p></div>';
+                        return;
+                    }
+                    
+                    container.innerHTML = ngos.map(ngo => `
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-dark text-white border-secondary h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-building fa-3x mb-3 text-info"></i>
+                                    <h5 class="card-title">${ngo.ngo_name}</h5>
+                                    <p class="mb-1"><small><i class="fas fa-envelope"></i> ${ngo.email}</small></p>
+                                    <p class="mb-1"><small><i class="fas fa-phone"></i> ${ngo.phone || 'N/A'}</small></p>
+                                    <p class="mb-1"><small><i class="fas fa-map-marker-alt"></i> ${ngo.city || 'N/A'}</small></p>
+                                    <button class="btn btn-sm btn-outline-info mt-2">View Profile</button>
+                                </div>
+                            </div>
+                        </div>`).join('');
+                })
+                .catch(err => {
+                    console.error('Error loading NGOs:', err);
+                    container.innerHTML = '<div class="col-12 text-center text-danger"><p>Failed to load NGO partners.</p></div>';
+                });
         }
 
         function loadEvents() {
@@ -686,8 +873,23 @@
         }
 
         // Form Submit
+        let isSubmitting = false;
+        
         async function handleForm(e) {
             e.preventDefault();
+            
+            // Prevent multiple submissions
+            if (isSubmitting) {
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            // Disable button and show loading state
+            isSubmitting = true;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
             
             const formData = {
                 org_name: document.getElementById('org_name').value,
@@ -731,6 +933,11 @@
                 document.getElementById('partnerError').style.display = 'block';
                 document.getElementById('partnerSuccess').style.display = 'none';
                 document.getElementById('partnerError').textContent = 'Failed to connect to server. Please try again.';
+            } finally {
+                // Re-enable button and restore original text
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         }
 
@@ -790,11 +997,14 @@
             });
         }
 
-        if (role === "NGO") {
-    document.getElementById("postEventBtn").style.display = "block";
-} else {
-    document.getElementById("postEventBtn").style.display = "none";
-}
+        // Check user role for post event button visibility
+        // TODO: Implement proper role-based authentication
+        const userRole = localStorage.getItem("userRole") || "USER";
+        if (userRole === "NGO") {
+            document.getElementById("postEventBtn").style.display = "block";
+        } else {
+            document.getElementById("postEventBtn").style.display = "none";
+        }
 
     </script>
 </body>

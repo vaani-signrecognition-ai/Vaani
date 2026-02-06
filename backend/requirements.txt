@@ -1,0 +1,17 @@
+# Core Flask Dependencies
+Flask==3.1.2
+Flask-CORS==6.0.2
+Flask-SQLAlchemy==3.1.1
+Werkzeug==3.1.5
+python-dotenv==1.2.1
+
+# Database (SQLite is built-in with Python, SQLAlchemy handles it)
+SQLAlchemy==2.0.46
+
+# Machine Learning (Optional - only if using ML features)
+tensorflow==2.15.0
+numpy==1.24.3
+opencv-python==4.8.1.78
+torch>=2.0.0
+mediapipe>=0.10.0
+h5py>=3.9.0
