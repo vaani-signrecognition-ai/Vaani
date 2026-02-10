@@ -1,0 +1,629 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAANI - Indian Sign Language Learning Platform</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>  <!-- Add this at the beginning of the body in index.html -->
+<!-- Replace the script at the beginning of body in index.html with this: -->
+
+<script>
+    // Check if this is the first visit in this session
+    if (sessionStorage.getItem('vaaniHasLoaded') !== 'true') {
+        // Redirect to loading page
+        window.location.href = "loading.html";
+    }
+    
+    // If user directly visits index.html, set the flag for future visits
+    sessionStorage.setItem('vaaniHasLoaded', 'true');
+</script>
+    <!-- Return to Website Button (only shown when modal is open) -->
+    <div class="return-to-website" id="returnToWebsite" style="display: none;">
+        <button class="btn-return" id="returnBtn">
+            <i class="fas fa-arrow-left"></i>
+            Return to Website
+        </button>
+    </div>
+
+    <!-- Webcam Modal -->
+    <div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="webcamModalLabel">
+                        <i class="fas fa-camera me-2"></i> Sign Language Recognition
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="modalCloseBtn"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <!-- Webcam Feed -->
+                                <div class="webcam-container mb-3">
+                                    <div class="webcam-frame">
+                                        <video id="webcamVideo" autoplay playsinline style="display: none;"></video>
+                                        <div id="webcamPlaceholder" class="webcam-placeholder">
+                                            <i class="fas fa-camera"></i>
+                                            <p>Camera not active</p>
+                                            <button class="btn btn-primary mt-3" id="manualStartCamera">
+                                                <i class="fas fa-play me-2"></i> Start Camera
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Camera Controls -->
+                                <div class="camera-controls mb-4">
+                                    <button id="startCamera" class="control-btn" title="Start Camera">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button id="stopCamera" class="control-btn" title="Stop Camera" disabled>
+                                        <i class="fas fa-stop"></i>
+                                    </button>
+                                    <button id="toggleMirror" class="control-btn" title="Mirror View">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                    <button id="closeCamera" class="control-btn" title="Close Camera & Return">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Quick Actions -->
+                                <div class="text-center mt-4">
+                                    <button class="btn btn-outline-light me-2" onclick="location.href='dictionary.html'">
+                                        <i class="fas fa-book me-1"></i> Open Dictionary
+                                    </button>
+                                    <button class="btn btn-outline-light" onclick="location.href='about.html'">
+                                        <i class="fas fa-info-circle me-1"></i> Learn About ISL
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <!-- Recognition Results -->
+                                <div class="recognition-results">
+                                    <h6 class="mb-3"><i class="fas fa-chart-bar me-2"></i> Recognition Status</h6>
+                                    
+                                    <div class="result-card mb-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 class="mb-0" id="detectedSign">Camera Ready</h5>
+                                                <small class="text-muted" id="signDescription">Click "Start Camera" to begin</small>
+                                            </div>
+                                            <div class="confidence-badge" id="statusBadge">Ready</div>
+                                        </div>
+                                        <div class="progress mt-2" style="height: 8px;">
+                                            <div id="statusBar" class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Quick Navigation -->
+                                    <div class="quick-navigation mt-4">
+                                        <h6 class="mb-3"><i class="fas fa-compass me-2"></i> Quick Navigation</h6>
+                                        <div class="list-group">
+                                            <a href="index.html" class="list-group-item list-group-item-action">
+                                                <i class="fas fa-home me-2"></i> Back to Homepage
+                                            </a>
+                                            <a href="dictionary.html" class="list-group-item list-group-item-action">
+                                                <i class="fas fa-book me-2"></i> ISL Dictionary
+                                            </a>
+                                            <a href="events.html" class="list-group-item list-group-item-action">
+                                                <i class="fas fa-calendar-alt me-2"></i> Events & Workshops
+                                            </a>
+                                            <a href="ngo-partners.html" class="list-group-item list-group-item-action">
+                                                <i class="fas fa-handshake me-2"></i> NGO Partners
+                                            </a>
+                                            <a href="contact.html" class="list-group-item list-group-item-action">
+                                                <i class="fas fa-envelope me-2"></i> Contact Us
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Camera Tips -->
+                                    <div class="practice-tips mt-4">
+                                        <h6 class="mb-3"><i class="fas fa-lightbulb me-2"></i> Camera Tips</h6>
+                                        <ul class="small" style="padding-left: 20px;">
+                                            <li>Ensure good lighting</li>
+                                            <li>Position camera at eye level</li>
+                                            <li>Keep hands visible in frame</li>
+                                            <li>Sign clearly and slowly</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalBtn">
+                        <i class="fas fa-times me-2"></i> Close & Return
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="location.href='dictionary.html'">
+                        <i class="fas fa-hands me-2"></i> Practice More Signs
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="index.html">
+                        <div class="logo-container">
+                            <div class="logo-placeholder" style="margin-right: 15px;">
+                                <img src="image.jpeg" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover;">
+                            </div>
+                            <div class="logo-text">
+                                <h1 class="main-logo">VAANI</h1>
+                                <p class="tagline">Voice for Voiceless</p>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="about.html">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="dictionary.html">Dictionary</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="ngo-partners.html">NGO Partners</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="events.html">Events</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="contact.html">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+   <!-- Hero Section with 3D Effects -->
+<section class="hero-section-3d">
+    <!-- Floating 3D Background Elements -->
+    <div class="floating-element floating-element-1"></div>
+    <div class="floating-element floating-element-2"></div>
+    <div class="floating-element floating-element-3"></div>
+    
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <!-- Centered 3D Animated Title -->
+              <!-- Animated Hero Title -->
+<h1 class="vaani-letter-title" id="vaaniText">
+  Vaani: Voice for Voiceless
+</h1>
+
+<p class="hero-subtitle mb-4 mx-auto" style="max-width: 700px;">
+  Empowering Through Indian Sign Language
+</p>
+
+                
+                <!-- Sign Language Images Grid -->
+                <div class="hero-images-grid mb-5">
+                    <div class="row justify-content-center g-4">
+                        <div class="col-md-4">
+                            <div class="sign-image-card">
+                                <div class="sign-image-wrapper">
+                                         <img src="bg3.jpg.jpeg" alt="Community Support" class="sign-img">
+                                </div>
+                                <div class="sign-image-overlay">
+                                    <h5>Learn Basic Signs</h5>
+                                    <p>Start your ISL journey</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="sign-image-card">
+                                <div class="sign-image-wrapper">
+                                    <img src="bg1.jpg.jpeg" alt="Learn Sign Language" class="sign-img">
+                                </div>
+                                <div class="sign-image-overlay">
+                                    <h5>Practice Communication</h5>
+                                    <p>Interactive sessions</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="sign-image-card">
+                                <div class="sign-image-wrapper">
+                                    <img src="bg2.jpg.jpeg" alt="Community Support" class="sign-img">
+                                        
+                                </div>
+                                <div class="sign-image-overlay">
+                                    <h5>Join Community</h5>
+                                    <p>Connect with learners</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Single Webcam Button -->
+                <div class="hero-cta-buttons text-center">
+                    <button class="main-webcam-btn" id="startInteractivePractice">
+                        <i class="fas fa-camera me-2"></i>
+                        Start Interactive Practice
+                    </button>
+                    <small class="text-white-50 mt-2 d-block">
+                        <i class="fas fa-info-circle me-1"></i> Click to open webcam and practice sign language
+                    </small>
+                </div>
+                
+                <!-- Webcam Status -->
+                <div class="mt-4 text-center" id="webcamStatus">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="camera-status-indicator me-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="logo-container mb-3">
+                        <img src="image.jpeg" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h3 class="main-logo" style="color: white; font-size: 1.8rem;">VAANI</h3>
+                            <p class="tagline" style="color: #cccccc;">Voice for Voiceless</p>
+                        </div>
+                    </div>
+                    <p>VAANI is an initiative to promote Indian Sign Language learning and accessibility for the deaf and hard-of-hearing community.</p>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="dictionary.html">Dictionary</a></li>
+                        <li><a href="ngo-partners.html">NGO Partners</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="footer-links">
+                        <li><a href="dictionary.html">ISL Dictionary</a></li>
+                        <li><a href="events.html">Upcoming Events</a></li>
+                        <li><a href="ngo-partners.html">Partner NGOs</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Contact Us</h5>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-envelope"></i> contact@vaani.org</p>
+                        <p><i class="fas fa-envelope"></i> partnerships@vaani.org</p>
+                        <p><i class="fas fa-phone"></i> +91 11 2345 6789</p>
+                        <p><i class="fas fa-globe"></i> www.vaani.org</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Follow Us</h6>
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-youtube fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 VAANI - Voice for Voiceless. All rights reserved.</p>
+                <p class="small">This website follows the accessibility guidelines of the Government of India.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        backToTop.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Set active nav link
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        
+        // Webcam System Variables
+        let webcamStream = null;
+        let isMirrored = true;
+        let isCameraActive = false;
+        
+        // Get DOM elements
+        const webcamVideo = document.getElementById('webcamVideo');
+        const webcamPlaceholder = document.getElementById('webcamPlaceholder');
+        const startCameraBtn = document.getElementById('startCamera');
+        const stopCameraBtn = document.getElementById('stopCamera');
+        const toggleMirrorBtn = document.getElementById('toggleMirror');
+        const closeCameraBtn = document.getElementById('closeCamera');
+        const manualStartCameraBtn = document.getElementById('manualStartCamera');
+        const returnToWebsite = document.getElementById('returnToWebsite');
+        const returnBtn = document.getElementById('returnBtn');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const startInteractivePracticeBtn = document.getElementById('startInteractivePractice');
+        
+        // Show return button when modal opens
+        document.getElementById('webcamModal').addEventListener('show.bs.modal', function () {
+            returnToWebsite.style.display = 'block';
+        });
+        
+        // Hide return button when modal closes
+        document.getElementById('webcamModal').addEventListener('hidden.bs.modal', function () {
+            returnToWebsite.style.display = 'none';
+            stopWebcam();
+        });
+        
+        // Return to website function
+        function returnToMainWebsite() {
+            // Stop camera if active
+            stopWebcam();
+            
+            // Hide modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('webcamModal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Hide return button
+            returnToWebsite.style.display = 'none';
+            
+            // Scroll to top of page
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Start webcam function
+        async function startWebcam() {
+            try {
+                // Request camera access
+                webcamStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: "user" 
+                    },
+                    audio: false 
+                });
+                
+                // Set video source
+                webcamVideo.srcObject = webcamStream;
+                webcamVideo.style.transform = isMirrored ? 'scaleX(-1)' : 'scaleX(1)';
+                webcamVideo.style.display = 'block';
+                
+                // Hide placeholder
+                webcamPlaceholder.style.display = 'none';
+                
+                // Update button states
+                startCameraBtn.disabled = true;
+                stopCameraBtn.disabled = false;
+                isCameraActive = true;
+                
+                // Update status
+                updateStatus('Camera Active', 'Show signs to the camera', 'Active', 'success');
+                
+                console.log('Webcam started successfully');
+                
+            } catch (err) {
+                console.error('Error accessing webcam:', err);
+                alert('Unable to access webcam. Please check permissions and try again.');
+                
+                webcamPlaceholder.innerHTML = `
+                    <i class="fas fa-exclamation-circle text-warning"></i>
+                    <p class="mt-2">Camera access denied</p>
+                    <button class="btn btn-primary mt-3" onclick="startWebcam()">
+                        <i class="fas fa-redo me-2"></i> Try Again
+                    </button>
+                    <button class="btn btn-outline-light mt-2" onclick="returnToMainWebsite()">
+                        <i class="fas fa-arrow-left me-2"></i> Return to Website
+                    </button>
+                `;
+            }
+        }
+        
+        // Stop webcam function
+        function stopWebcam() {
+            if (webcamStream) {
+                // Stop all tracks
+                webcamStream.getTracks().forEach(track => {
+                    track.stop();
+                });
+                
+                // Clear variables
+                webcamStream = null;
+                webcamVideo.srcObject = null;
+                webcamVideo.style.display = 'none';
+                
+                // Show placeholder
+                webcamPlaceholder.style.display = 'flex';
+                webcamPlaceholder.innerHTML = `
+                    <i class="fas fa-camera"></i>
+                    <p>Camera not active</p>
+                    <button class="btn btn-primary mt-3" id="manualStartCamera">
+                        <i class="fas fa-play me-2"></i> Start Camera
+                    </button>
+                `;
+                
+                // Reattach event listener to new button
+                document.getElementById('manualStartCamera').addEventListener('click', startWebcam);
+                
+                // Update button states
+                startCameraBtn.disabled = false;
+                stopCameraBtn.disabled = true;
+                isCameraActive = false;
+                
+                // Update status
+                updateStatus('Camera Ready', 'Click "Start Camera" to begin', 'Ready', 'info');
+                
+                console.log('Webcam stopped');
+            }
+        }
+        
+        // Update status display
+        function updateStatus(title, description, badgeText, badgeType) {
+            document.getElementById('detectedSign').textContent = title;
+            document.getElementById('signDescription').textContent = description;
+            document.getElementById('statusBadge').textContent = badgeText;
+            
+            const statusBar = document.getElementById('statusBar');
+            statusBar.className = 'progress-bar ';
+            
+            switch(badgeType) {
+                case 'success':
+                    statusBar.classList.add('bg-success');
+                    break;
+                case 'warning':
+                    statusBar.classList.add('bg-warning');
+                    break;
+                case 'danger':
+                    statusBar.classList.add('bg-danger');
+                    break;
+                default:
+                    statusBar.classList.add('bg-info');
+            }
+        }
+        
+        // Toggle mirror view
+        function toggleMirror() {
+            isMirrored = !isMirrored;
+            webcamVideo.style.transform = isMirrored ? 'scaleX(-1)' : 'scaleX(1)';
+            toggleMirrorBtn.title = isMirrored ? 'Mirror View (On)' : 'Normal View';
+        }
+        
+        // Close camera and return
+        function closeCameraAndReturn() {
+            stopWebcam();
+            returnToMainWebsite();
+        }
+        
+        // Open webcam modal function
+        function openWebcamModal() {
+            const modal = new bootstrap.Modal(document.getElementById('webcamModal'));
+            modal.show();
+        }
+        
+        // Event Listeners
+        startCameraBtn.addEventListener('click', startWebcam);
+        stopCameraBtn.addEventListener('click', stopWebcam);
+        toggleMirrorBtn.addEventListener('click', toggleMirror);
+        closeCameraBtn.addEventListener('click', closeCameraAndReturn);
+        returnBtn.addEventListener('click', returnToMainWebsite);
+        modalCloseBtn.addEventListener('click', returnToMainWebsite);
+        closeModalBtn.addEventListener('click', returnToMainWebsite);
+        
+        // Manual start camera button (in placeholder)
+        manualStartCameraBtn.addEventListener('click', startWebcam);
+        
+        // Open webcam modal when clicking "Start Interactive Practice"
+        startInteractivePracticeBtn.addEventListener('click', openWebcamModal);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape key returns to website
+            if (e.key === 'Escape') {
+                returnToMainWebsite();
+            }
+            
+            // Space bar starts/stops camera
+            if (e.key === ' ' && document.getElementById('webcamModal').classList.contains('show')) {
+                e.preventDefault();
+                if (isCameraActive) {
+                    stopWebcam();
+                } else {
+                    startWebcam();
+                }
+            }
+        });
+        
+        // Initialize
+        console.log('VAANI Website Ready');
+        console.log('Webcam System: Ready');
+        console.log('Press ESC to return from camera mode');
+    </script>
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const textEl = document.getElementById("vaaniText");
+    const text = textEl.innerText;
+    textEl.innerHTML = "";
+
+    text.split("").forEach((char, index) => {
+      const span = document.createElement("span");
+      span.textContent = char === " " ? "\u00A0" : char;
+      span.style.animationDelay = `${index * 0.12}s`;
+      textEl.appendChild(span);
+    });
+  });
+</script>
+
+</body>
+</html>

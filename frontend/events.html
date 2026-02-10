@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - VAANI Indian Sign Language Platform</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="index.html">
+                        <div class="logo-container">
+                            <div class="logo-placeholder" style="margin-right: 15px;">
+                                <img src="image.jpeg" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover;">
+                            </div>
+                            <div class="logo-text">
+                                <h1 class="main-logo">VAANI</h1>
+                                <p class="tagline">Voice for Voiceless</p>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="about.html">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="dictionary.html">Dictionary</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="ngo-partners.html">NGO Partners</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="events.html">Events</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="contact.html">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Events & Meetups</h1>
+            <p>Stay updated with workshops, seminars, and community events related to Indian Sign Language</p>
+        </div>
+    </section>
+    
+    <!-- Events Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title mb-0">Upcoming Events</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postEventModal">
+                    <i class="fas fa-plus me-2"></i> Post an Event
+                </button>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date">
+                            <i class="fas fa-calendar-alt me-2"></i> June 15, 2023
+                        </div>
+                        <h4>ISL Beginners Workshop</h4>
+                        <p class="text-muted mb-3">A comprehensive workshop for beginners to learn basic Indian Sign Language communication skills.</p>
+                        <div class="mb-3">
+                            <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> Community Center, Delhi</p>
+                            <p><i class="fas fa-clock me-2 text-primary"></i> 10:00 AM - 2:00 PM</p>
+                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: ISLRTC</p>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary">More Details</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date">
+                            <i class="fas fa-calendar-alt me-2"></i> June 22, 2023
+                        </div>
+                        <h4>Deaf Awareness Webinar</h4>
+                        <p class="text-muted mb-3">Online session on creating inclusive workplaces for deaf and hard-of-hearing individuals.</p>
+                        <div class="mb-3">
+                            <p><i class="fas fa-globe me-2 text-primary"></i> Virtual Event (Zoom)</p>
+                            <p><i class="fas fa-clock me-2 text-primary"></i> 6:00 PM - 8:00 PM</p>
+                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: National Association of the Deaf</p>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary">Join Now</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date">
+                            <i class="fas fa-calendar-alt me-2"></i> July 5, 2023
+                        </div>
+                        <h4>ISL Teachers Training Program</h4>
+                        <p class="text-muted mb-3">Training program for educators to effectively teach Indian Sign Language in classrooms.</p>
+                        <div class="mb-3">
+                            <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> Education Department, Mumbai</p>
+                            <p><i class="fas fa-clock me-2 text-primary"></i> 9:00 AM - 5:00 PM</p>
+                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: All India Federation of the Deaf</p>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary">Register</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date">
+                            <i class="fas fa-calendar-alt me-2"></i> July 12, 2023
+                        </div>
+                        <h4>Community Meetup: ISL Practice Session</h4>
+                        <p class="text-muted mb-3">Casual meetup for ISL learners to practice with native signers in a friendly environment.</p>
+                        <div class="mb-3">
+                            <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> Central Park, Bangalore</p>
+                            <p><i class="fas fa-clock me-2 text-primary"></i> 4:00 PM - 6:00 PM</p>
+                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: VAANI Community</p>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary">Attend</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="#" class="btn btn-primary">
+                    <i class="fas fa-calendar-alt me-2"></i> View All Events
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Past Events -->
+    <section class="content-section" style="background-color: #f9f9f9;">
+        <div class="container">
+            <h2 class="section-title">Past Events</h2>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date" style="background-color: #6c757d;">
+                            <i class="fas fa-calendar-alt me-2"></i> May 20, 2023
+                        </div>
+                        <h4>ISL Awareness Camp</h4>
+                        <p class="text-muted">Successfully conducted awareness camp with 200+ participants.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date" style="background-color: #6c757d;">
+                            <i class="fas fa-calendar-alt me-2"></i> April 15, 2023
+                        </div>
+                        <h4>Deaf Community Workshop</h4>
+                        <p class="text-muted">Workshop focused on digital accessibility for the deaf community.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date" style="background-color: #6c757d;">
+                            <i class="fas fa-calendar-alt me-2"></i> March 28, 2023
+                        </div>
+                        <h4>ISL Teacher Certification</h4>
+                        <p class="text-muted">Certification program for 50+ ISL teachers completed successfully.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="logo-container mb-3">
+                        <div class="logo-placeholder" style="margin-right: 15px;">
+                            <img src="image.jpeg" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover;">
+                        </div>
+                        <div>
+                            <h3 class="main-logo" style="color: white; font-size: 1.8rem;">VAANI</h3>
+                            <p class="tagline" style="color: #cccccc;">Indian Sign Language Learning Platform</p>
+                        </div>
+                    </div>
+                    <p>VAANI is an initiative to promote Indian Sign Language learning and accessibility for the deaf and hard-of-hearing community.</p>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="dictionary.html">Dictionary</a></li>
+                        <li><a href="ngo-partners.html">NGO Partners</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="footer-links">
+                        <li><a href="dictionary.html">ISL Dictionary</a></li>
+                        <li><a href="events.html">Upcoming Events</a></li>
+                        <li><a href="ngo-partners.html">Partner NGOs</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Contact Us</h5>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-map-marker-alt"></i> Delhi, India</p>
+                        <p><i class="fas fa-envelope"></i> contact@vaani.org</p>
+                        <p><i class="fas fa-phone"></i> +91 11 2345 6789</p>
+                        <p><i class="fas fa-globe"></i> www.vaani.org</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Follow Us</h6>
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-youtube fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 VAANI - Indian Sign Language Learning Platform. All rights reserved.</p>
+                <p class="small">This website follows the accessibility guidelines of the Government of India.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Post Event Modal -->
+    <div class="modal fade" id="postEventModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Post a New Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="eventForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="eventTitle" class="form-label">Event Title *</label>
+                                <input type="text" class="form-control" id="eventTitle" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="eventDate" class="form-label">Event Date *</label>
+                                <input type="date" class="form-control" id="eventDate" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="eventTime" class="form-label">Event Time *</label>
+                                <input type="time" class="form-control" id="eventTime" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="eventType" class="form-label">Event Type *</label>
+                                <select class="form-select" id="eventType" required>
+                                    <option value="">Select type</option>
+                                    <option value="workshop">Workshop</option>
+                                    <option value="webinar">Webinar</option>
+                                    <option value="meetup">Community Meetup</option>
+                                    <option value="seminar">Seminar</option>
+                                    <option value="training">Training Program</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="eventLocation" class="form-label">Location *</label>
+                            <input type="text" class="form-control" id="eventLocation" placeholder="Physical address or virtual platform" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="organizer" class="form-label">Organizer Name *</label>
+                            <input type="text" class="form-control" id="organizer" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="eventDescription" class="form-label">Event Description *</label>
+                            <textarea class="form-control" id="eventDescription" rows="4" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contactEmail" class="form-label">Contact Email *</label>
+                            <input type="email" class="form-control" id="contactEmail" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="submitEvent()">Post Event</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        backToTop.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Set active nav link
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        
+        // Event Form Submission
+        function submitEvent() {
+            const eventTitle = document.getElementById('eventTitle').value;
+            const eventDate = document.getElementById('eventDate').value;
+            
+            if (!eventTitle || !eventDate) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // In a real app, this would send data to backend
+            alert('Event posted successfully! It will be reviewed before appearing on the platform.');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('postEventModal'));
+            modal.hide();
+            
+            // Reset form
+            document.getElementById('eventForm').reset();
+        }
+        
+        // Initialize modal if needed
+        const postEventModal = document.getElementById('postEventModal');
+        if (postEventModal) {
+            postEventModal.addEventListener('show.bs.modal', function () {
+                // Reset form when modal opens
+                document.getElementById('eventForm').reset();
+            });
+        }
+    </script>
+</body>
+</html>
