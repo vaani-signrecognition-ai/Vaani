@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Partnership - VAANI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Contact Form CSS -->
+    <style>
+        /* Contact Form Container */
+        .contact-form-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 40px 20px;
+        }
+
+        .form-card1 {
+            background-image: linear-gradient(163deg, #667eea 0%, #a1c4fd 100%);
+            border-radius: 22px;
+            padding: 3px;
+            width: 100%;
+            max-width: 800px;
+            transition: all 0.3s;
+        }
+
+        .form-card1:hover {
+            box-shadow: 0px 0px 30px 1px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-card2 {
+            border-radius: 0;
+            transition: all 0.2s;
+            background-color: #171717;
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .form-card2:hover {
+            transform: scale(0.98);
+            border-radius: 20px;
+        }
+
+        .ngo-form {
+            display: flex;
+            flex-direction: column;
+            font-family: inherit;
+            gap: 15px;
+            padding-inline: 1.5em;
+            padding-bottom: 0.4em;
+            background-color: #171717;
+            border-radius: 20px;
+        }
+
+        .form-heading {
+            text-align: center;
+            margin: 1.5em;
+            color: #a1c4fd;
+            font-size: 1.8em;
+            background-color: transparent;
+            align-self: center;
+        }
+
+        .form-subheading {
+            text-align: center;
+            color: #c2e9fb;
+            margin-bottom: 2em;
+            font-size: 1.1em;
+        }
+
+        .form-field {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            border-radius: 10px;
+            padding: 0.8em;
+            border: none;
+            outline: none;
+            color: white;
+            background-color: #171717;
+            box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+        }
+
+        .input-field {
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            color: #c2e9fb;
+            padding-inline: 0.5em;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .sendMessage-btn {
+            cursor: pointer;
+            margin: 2em 0 1em 0;
+            padding: 1em;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            color: #a1c4fd;
+            font-weight: bold;
+            outline: 1px solid #667eea;
+            transition: all ease-in-out 0.3s;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sendMessage-btn:hover {
+            transition: all ease-in-out 0.3s;
+            background-color: #667eea;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+        }
+
+        .form-success-message {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid #667eea;
+            color: #a1c4fd;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .back-home-btn {
+            display: block;
+            text-align: center;
+            color: #a1c4fd;
+            text-decoration: none;
+            margin-top: 20px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-home-btn:hover {
+            color: #ffffff;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .required {
+            color: #ff4757;
+            margin-left: 3px;
+        }
+
+        .field-label {
+            display: block;
+            color: #a1c4fd;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        select.input-field {
+            cursor: pointer;
+        }
+
+        select.input-field option {
+            background-color: #171717;
+            color: #c2e9fb;
+        }
+
+        @media (max-width: 768px) {
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+
+            .ngo-form {
+                padding-inline: 1em;
+            }
+
+            .form-heading {
+                font-size: 1.5em;
+                margin: 1em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NGO Partnership Form Page -->
+    <div class="contact-form-page">
+        <div class="form-card1">
+            <div class="form-card2">
+                <form class="ngo-form" id="ngoForm">
+                    <h2 class="form-heading">NGO Partnership Application</h2>
+                    <p class="form-subheading">Join hands with VAANI to promote Indian Sign Language accessibility</p>
+
+                    <!-- Organization Name -->
+                    <div>
+                        <label class="field-label">Organization Name <span class="required">*</span></label>
+                        <div class="form-field">
+                            <input type="text" id="organization_name" class="input-field"
+                                placeholder="Enter organization name" required>
+                        </div>
+                    </div>
+
+                    <!-- Contact Person Name and Contact Number -->
+                    <div class="field-row">
+                        <div>
+                            <label class="field-label">Contact Person Name <span class="required">*</span></label>
+                            <div class="form-field">
+                                <input type="text" id="contact_person_name" class="input-field" placeholder="Full name"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="field-label">Contact Number <span class="required">*</span></label>
+                            <div class="form-field">
+                                <input type="tel" id="contact_number" class="input-field" placeholder="Phone number"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email ID -->
+                    <div>
+                        <label class="field-label">Email ID <span class="required">*</span></label>
+                        <div class="form-field">
+                            <input type="email" id="email_id" class="input-field" placeholder="organization@email.com"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Organization Type and City -->
+                    <div class="field-row">
+                        <div>
+                            <label class="field-label">Organization Type <span class="required">*</span></label>
+                            <div class="form-field">
+                                <select id="organization_type" class="input-field" required>
+                                    <option value="" disabled selected>Select type</option>
+                                    <option value="education">Education & Training</option>
+                                    <option value="disability_rights">Disability Rights</option>
+                                    <option value="healthcare">Healthcare Services</option>
+                                    <option value="community">Community Development</option>
+                                    <option value="youth">Youth Empowerment</option>
+                                    <option value="women">Women Empowerment</option>
+                                    <option value="research">Research & Advocacy</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="field-label">City <span class="required">*</span></label>
+                            <div class="form-field">
+                                <input type="text" id="city" class="input-field" placeholder="City" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="field-label">Organization Description <span class="required">*</span></label>
+                        <div class="form-field">
+                            <textarea id="description" class="input-field"
+                                placeholder="Describe your organization's mission, activities, and how you'd like to collaborate with VAANI..."
+                                required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="sendMessage-btn">
+                        <i class="fas fa-handshake me-2"></i> Submit Partnership Application
+                    </button>
+
+                    <!-- Success Message -->
+                    <div class="form-success-message" id="successMessage">
+                        <i class="fas fa-check-circle fa-2x mb-3"></i>
+                        <h4>Application Submitted Successfully!</h4>
+                        <p>Thank you for your interest in partnering with VAANI. Our team will review your application
+                            and contact you soon.</p>
+                        <p class="small mt-3">Application ID: <span id="applicationId"></span></p>
+                    </div>
+                </form>
+
+                <!-- Back to Home Link -->
+                <a href="index.html" class="back-home-btn">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Homepage
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // NGO Form Handling
+        const ngoForm = document.getElementById('ngoForm');
+        const successMessage = document.getElementById('successMessage');
+        const applicationIdSpan = document.getElementById('applicationId');
+
+        // Generate application ID
+        function generateApplicationId() {
+            const timestamp = new Date().getTime();
+            const random = Math.floor(Math.random() * 1000);
+            return `VAANI-${timestamp}-${random}`;
+        }
+
+        ngoForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Get form values and map them to backend names
+            const formData = {
+                org_name: document.getElementById('organization_name').value,
+                contact_person: document.getElementById('contact_person_name').value,
+                phone: document.getElementById('contact_number').value,
+                email: document.getElementById('email_id').value,
+                purpose: document.getElementById('organization_type').value,
+                description: document.getElementById('description').value,
+                city: document.getElementById('city').value
+            };
+
+            // Validation
+            if (!validateForm(formData)) {
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = ngoForm.querySelector('.sendMessage-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            // Send to backend
+            fetch('/api/ngo/partner', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+
+                    if (data.success || data.message) {
+                        // Generate and display application ID for frontend feedback
+                        const applicationId = generateApplicationId();
+                        applicationIdSpan.textContent = applicationId;
+
+                        // Show success message
+                        successMessage.style.display = 'block';
+
+                        // Reset form
+                        ngoForm.reset();
+
+                        // Scroll to success message
+                        successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        alert('Error: ' + (data.error || 'Unknown error occurred'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was an error submitting your application. Please ensure the server is running.');
+                })
+                .finally(() => {
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                });
+        });
+
+        // Form validation function
+        function validateForm(data) {
+            // Mapping of backend names to HTML IDs
+            const fieldMap = {
+                'org_name': 'organization_name',
+                'contact_person': 'contact_person_name',
+                'phone': 'contact_number',
+                'email': 'email_id',
+                'purpose': 'organization_type',
+                'description': 'description',
+                'city': 'city'
+            };
+
+            for (const field in fieldMap) {
+                if (!data[field] || (typeof data[field] === 'string' && data[field].trim() === '')) {
+                    alert(`Please fill in the ${field.replace('_', ' ')} field`);
+                    document.getElementById(fieldMap[field]).focus();
+                    return false;
+                }
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                alert('Please enter a valid email address');
+                document.getElementById('email_id').focus();
+                return false;
+            }
+
+            // Phone validation
+            const phoneRegex = /^[\+]?[0-9\s\-\(\)]+$/;
+            if (!phoneRegex.test(data.phone.replace(/\D/g, ''))) {
+                alert('Please enter a valid phone number');
+                document.getElementById('contact_number').focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        // Auto-format phone number
+        const phoneInput = document.getElementById('contact_number');
+        phoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    value = value;
+                } else if (value.length <= 6) {
+                    value = `${value.slice(0, 3)}-${value.slice(3)}`;
+                } else if (value.length <= 10) {
+                    value = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6)}`;
+                } else {
+                    value = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6, 10)}`;
+                }
+            }
+            e.target.value = value;
+        });
+
+        // Form field focus effects
+        const formFields = document.querySelectorAll('.form-field');
+        const inputs = document.querySelectorAll('.input-field');
+
+        inputs.forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentElement.style.boxShadow = 'inset 2px 5px 10px rgb(5, 5, 5), 0 0 0 2px #667eea';
+            });
+
+            input.addEventListener('blur', function () {
+                this.parentElement.style.boxShadow = 'inset 2px 5px 10px rgb(5, 5, 5)';
+
+                // Validation styling
+                if (this.value.trim() === '') {
+                    this.parentElement.style.boxShadow = 'inset 2px 5px 10px rgba(234, 102, 102, 0.2)';
+                } else {
+                    this.parentElement.style.boxShadow = 'inset 2px 5px 10px rgba(102, 126, 234, 0.2)';
+                }
+            });
+        });
+
+        console.log('VAANI NGO Partnership Form Ready');
+    </script>
+</body>
+
+</html>

@@ -13,8 +13,8 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-key")
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
     
-    # Database - SQLAlchemy
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    # Database - SQLAlchemy (default to SQLite for local development)
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///vaani.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Email settings

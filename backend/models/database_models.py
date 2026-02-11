@@ -12,14 +12,16 @@ class SignDictionary(db.Model):
     sign_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     word = db.Column(db.String(100), nullable=False)
     starting_letter = db.Column(db.String(1), nullable=False)
-    video_path = db.Column(db.String(255), nullable=False)
+    video_path = db.Column(db.String(255), nullable=True)
+    image_path = db.Column(db.String(255), nullable=True)
     
     def to_dict(self):
         return {
             'sign_id': self.sign_id,
             'word': self.word,
             'starting_letter': self.starting_letter,
-            'video_path': self.video_path
+            'video_path': self.video_path,
+            'image_path': self.image_path
         }
 
 
