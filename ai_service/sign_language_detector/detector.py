@@ -29,7 +29,17 @@ class SignLanguageDetector:
         self.model = model_dict['model']
         
         # Map specific predicted labels to display labels
-        self.label_map = {'10': 'A'}
+        self.label_map = {
+            '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
+            '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+            'hello': 'Hello',
+            'goodbye': 'Goodbye',
+            'namaste': 'Namaste',
+            'help': 'Help',
+            'yes': 'Yes',
+            'I_love_you': 'I Love You',
+            'space': ' '
+        }
         
         # Initialize MediaPipe
         self.mp_hands = mp.solutions.hands

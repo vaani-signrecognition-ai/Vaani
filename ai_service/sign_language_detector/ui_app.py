@@ -23,7 +23,7 @@ class DetectorUI:
         BUTTON_HEIGHT = 50
         BUTTON_Y = 10
         self.buttons = {
-            'add': {'x': 10, 'y': BUTTON_Y, 'w': 120, 'h': BUTTON_HEIGHT, 'label': 'ADD LETTER', 'color': (144, 238, 144)},
+            'add': {'x': 10, 'y': BUTTON_Y, 'w': 120, 'h': BUTTON_HEIGHT, 'label': 'ADD WORD', 'color': (144, 238, 144)},
             'space': {'x': 140, 'y': BUTTON_Y, 'w': 100, 'h': BUTTON_HEIGHT, 'label': 'SPACE', 'color': (250, 200, 120)},
             'clear': {'x': 250, 'y': BUTTON_Y, 'w': 100, 'h': BUTTON_HEIGHT, 'label': 'CLEAR', 'color': (147, 181, 255)},
             'speak': {'x': 360, 'y': BUTTON_Y, 'w': 100, 'h': BUTTON_HEIGHT, 'label': 'SPEAK', 'color': (238, 180, 238)},
