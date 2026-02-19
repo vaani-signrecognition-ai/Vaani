@@ -13,7 +13,7 @@ from utils.email_sender import send_approval_email, send_rejection_email
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
     
     # Initialize database
     db.init_app(app)
@@ -99,18 +99,39 @@ def get_dictionary():
         search = request.args.get('search', '').strip()
         
         if search:
-            # Search by word or starting letter
-            signs = SignDictionary.query.filter(
-                (SignDictionary.word.ilike(f'%{search}%')) | 
-                (SignDictionary.starting_letter.ilike(search[0] if search else ''))
-            ).order_by(SignDictionary.word).all()
+            # 1. Try exact match first
+            exact_match = SignDictionary.query.filter(SignDictionary.word.ilike(search)).first()
+            
+            # 2. Get fuzzy matches on the word
+            other_matches = SignDictionary.query.filter(
+                SignDictionary.word.ilike(f'%{search}%'),
+                SignDictionary.word.is_not(search)
+            ).all()
+
+            # 3. If it's a single letter, include other signs starting with that letter
+            letter_matches = []
+            if len(search) == 1:
+                letter_matches = SignDictionary.query.filter(
+                    SignDictionary.starting_letter.ilike(search),
+                    SignDictionary.word.is_not(search),
+                    ~SignDictionary.word.ilike(f'%{search}%') # Don't duplicate
+                ).all()
+
+            # Combine: Exact first, then others
+            signs = ([exact_match] if exact_match else []) + other_matches + letter_matches
+            
+            # Limit total results
+            signs = signs[:50]
         else:
             # Get all signs (limit 100)
             signs = SignDictionary.query.order_by(SignDictionary.word).limit(100).all()
 
-        return jsonify([sign.to_dict() for sign in signs]), 200
+        return jsonify([sign.to_dict() for sign in signs if sign is not None]), 200
 
     except Exception as e:
+        print(f"[ERROR] Dictionary API failure: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/events", methods=["GET"])
@@ -197,15 +218,21 @@ def post_event():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/api/ngo/partner", methods=["POST"])
+@app.route("/api/ngo/partner", methods=["POST", "OPTIONS"])
 def partner_with_ngo():
-    print("=== Partner request received ===")
-    print(f"Request method: {request.method}")
-    print(f"Request headers: {request.headers}")
-    print(f"Request data: {request.data}")
+    if request.method == "OPTIONS":
+        return jsonify({"success": True}), 200
+        
+    print("\n" + "="*50)
+    print(f"NGO PARTNER REQUEST RECEIVED: {datetime.now()}")
+    print(f"Origin: {request.headers.get('Origin')}")
     
-    data = request.json
-    print(f"Parsed JSON data: {data}")
+    try:
+        data = request.json
+        print(f"Data: {data}")
+    except Exception as e:
+        print(f"Error parsing JSON: {str(e)}")
+        return jsonify({"success": False, "error": "Invalid JSON"}), 400
 
     # Match fields from NEW index.html form
     org_name = data.get("org_name")
@@ -358,6 +385,37 @@ def handle_ngo_request_action():
         traceback.print_exc()
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+@app.route("/api/login", methods=["POST"])
+def login():
+    try:
+        data = request.json
+        email = data.get("email")
+        password = data.get("password")
+        
+        if not email or not password:
+            return jsonify({"success": False, "error": "Email and password are required"}), 400
+            
+        # Check NGO accounts
+        account = NGOAccount.query.filter_by(email=email).first()
+        if account and account.is_active and check_password_hash(account.password_hash, password):
+            # Get NGO info
+            ngo = NGO.query.filter_by(email=email).first()
+            return jsonify({
+                "success": True,
+                "message": "NGO Login successful",
+                "user_type": "ngo",
+                "ngo_id": ngo.ngo_id if ngo else None,
+                "ngo_name": ngo.ngo_name if ngo else "NGO Partner",
+                "email": email
+            }), 200
+            
+        return jsonify({"success": False, "error": "Invalid email or password"}), 401
+        
+    except Exception as e:
+        print(f"Error in login: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 
 @app.route("/api/ngos", methods=["GET"])
 def get_ngos():

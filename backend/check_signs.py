@@ -9,6 +9,7 @@ from extensions import db
 from models.database_models import SignDictionary
 
 with app.app_context():
+    print(f"Using Database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
     signs = SignDictionary.query.all()
     print(f"Total signs in database: {len(signs)}")
     for sign in signs:

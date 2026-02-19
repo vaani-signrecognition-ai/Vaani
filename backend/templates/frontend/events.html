@@ -15,6 +15,21 @@
         rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <style>
+        #postEventModal .modal-content {
+            background: #ffffff;
+            color: #1a1a1a !important;
+        }
+
+        #postEventModal .form-label {
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        #postEventModal .modal-title {
+            color: #1a1a1a;
+        }
+    </style>
 
 </head>
 
@@ -58,8 +73,13 @@
                             <li class="nav-item">
                                 <a class="nav-link active" href="events.html">Events</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" id="partnerWithUsNavItem">
                                 <a class="nav-link" href="contact.html">Partner With Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="login.html">
+                                    <i class="fas fa-user"></i> Login
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -82,79 +102,17 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="section-title mb-0">Upcoming Events</h2>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postEventModal">
+                <button class="btn btn-primary" id="postEventBtn" data-bs-toggle="modal"
+                    data-bs-target="#postEventModal" style="display: none;">
                     <i class="fas fa-plus me-2"></i> Post an Event
                 </button>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="event-card p-4">
-                        <div class="event-date">
-                            <i class="fas fa-calendar-alt me-2"></i> June 15, 2023
-                        </div>
-                        <h4>ISL Beginners Workshop</h4>
-                        <p class="text-muted mb-3">A comprehensive workshop for beginners to learn basic Indian Sign
-                            Language communication skills.</p>
-                        <div class="mb-3">
-                            <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> Community Center, Delhi</p>
-                            <p><i class="fas fa-clock me-2 text-primary"></i> 10:00 AM - 2:00 PM</p>
-                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: ISLRTC</p>
-                        </div>
-                        <a href="#" class="btn btn-outline-primary">More Details</a>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-4">
-                    <div class="event-card p-4">
-                        <div class="event-date">
-                            <i class="fas fa-calendar-alt me-2"></i> June 22, 2023
-                        </div>
-                        <h4>Deaf Awareness Webinar</h4>
-                        <p class="text-muted mb-3">Online session on creating inclusive workplaces for deaf and
-                            hard-of-hearing individuals.</p>
-                        <div class="mb-3">
-                            <p><i class="fas fa-globe me-2 text-primary"></i> Virtual Event (Zoom)</p>
-                            <p><i class="fas fa-clock me-2 text-primary"></i> 6:00 PM - 8:00 PM</p>
-                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: National Association of the
-                                Deaf</p>
-                        </div>
-                        <a href="#" class="btn btn-outline-primary">Join Now</a>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-4">
-                    <div class="event-card p-4">
-                        <div class="event-date">
-                            <i class="fas fa-calendar-alt me-2"></i> July 5, 2023
-                        </div>
-                        <h4>ISL Teachers Training Program</h4>
-                        <p class="text-muted mb-3">Training program for educators to effectively teach Indian Sign
-                            Language in classrooms.</p>
-                        <div class="mb-3">
-                            <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> Education Department, Mumbai</p>
-                            <p><i class="fas fa-clock me-2 text-primary"></i> 9:00 AM - 5:00 PM</p>
-                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: All India Federation of the
-                                Deaf</p>
-                        </div>
-                        <a href="#" class="btn btn-outline-primary">Register</a>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-4">
-                    <div class="event-card p-4">
-                        <div class="event-date">
-                            <i class="fas fa-calendar-alt me-2"></i> July 12, 2023
-                        </div>
-                        <h4>Community Meetup: ISL Practice Session</h4>
-                        <p class="text-muted mb-3">Casual meetup for ISL learners to practice with native signers in a
-                            friendly environment.</p>
-                        <div class="mb-3">
-                            <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> Central Park, Bangalore</p>
-                            <p><i class="fas fa-clock me-2 text-primary"></i> 4:00 PM - 6:00 PM</p>
-                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: VAANI Community</p>
-                        </div>
-                        <a href="#" class="btn btn-outline-primary">Attend</a>
+            <div class="row" id="upcomingEventsContainer">
+                <!-- Data loaded via API -->
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading events...</span>
                     </div>
                 </div>
             </div>
@@ -172,36 +130,8 @@
         <div class="container">
             <h2 class="section-title">Past Events</h2>
 
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="event-card p-4">
-                        <div class="event-date" style="background-color: #6c757d;">
-                            <i class="fas fa-calendar-alt me-2"></i> May 20, 2023
-                        </div>
-                        <h4>ISL Awareness Camp</h4>
-                        <p class="text-muted">Successfully conducted awareness camp with 200+ participants.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-4">
-                    <div class="event-card p-4">
-                        <div class="event-date" style="background-color: #6c757d;">
-                            <i class="fas fa-calendar-alt me-2"></i> April 15, 2023
-                        </div>
-                        <h4>Deaf Community Workshop</h4>
-                        <p class="text-muted">Workshop focused on digital accessibility for the deaf community.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-4">
-                    <div class="event-card p-4">
-                        <div class="event-date" style="background-color: #6c757d;">
-                            <i class="fas fa-calendar-alt me-2"></i> March 28, 2023
-                        </div>
-                        <h4>ISL Teacher Certification</h4>
-                        <p class="text-muted">Certification program for 50+ ISL teachers completed successfully.</p>
-                    </div>
-                </div>
+            <div class="row" id="pastEventsContainer">
+                <!-- Data loaded via API -->
             </div>
         </div>
     </section>
@@ -233,6 +163,8 @@
                         <li><a href="dictionary.html">Dictionary</a></li>
                         <li><a href="ngo-partners.html">NGO Partners</a></li>
                         <li><a href="events.html">Events</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="../admin_requests.html">Admin Panel</a></li>
                     </ul>
                 </div>
 
@@ -282,54 +214,22 @@
                 </div>
                 <div class="modal-body">
                     <form id="eventForm">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="eventTitle" class="form-label">Event Title *</label>
-                                <input type="text" class="form-control" id="eventTitle" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="eventDate" class="form-label">Event Date *</label>
-                                <input type="date" class="form-control" id="eventDate" required>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="eventTime" class="form-label">Event Time *</label>
-                                <input type="time" class="form-control" id="eventTime" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="eventType" class="form-label">Event Type *</label>
-                                <select class="form-select" id="eventType" required>
-                                    <option value="">Select type</option>
-                                    <option value="workshop">Workshop</option>
-                                    <option value="webinar">Webinar</option>
-                                    <option value="meetup">Community Meetup</option>
-                                    <option value="seminar">Seminar</option>
-                                    <option value="training">Training Program</option>
-                                </select>
-                            </div>
-                        </div>
-
                         <div class="mb-3">
-                            <label for="eventLocation" class="form-label">Location *</label>
-                            <input type="text" class="form-control" id="eventLocation"
-                                placeholder="Physical address or virtual platform" required>
+                            <label class="form-label">Event Title *</label>
+                            <input type="text" id="eventTitle" class="form-control" required>
                         </div>
-
                         <div class="mb-3">
-                            <label for="organizer" class="form-label">Organizer Name *</label>
-                            <input type="text" class="form-control" id="organizer" required>
+                            <label class="form-label">Date *</label>
+                            <input type="date" id="eventDate" class="form-control" required>
                         </div>
-
                         <div class="mb-3">
-                            <label for="eventDescription" class="form-label">Event Description *</label>
-                            <textarea class="form-control" id="eventDescription" rows="4" required></textarea>
+                            <label class="form-label">Location *</label>
+                            <input type="text" id="eventLocation" class="form-control" placeholder="City or Online"
+                                required>
                         </div>
-
                         <div class="mb-3">
-                            <label for="contactEmail" class="form-label">Contact Email *</label>
-                            <input type="email" class="form-control" id="contactEmail" required>
+                            <label class="form-label">Description *</label>
+                            <textarea id="eventDescription" class="form-control" rows="4" required></textarea>
                         </div>
                     </form>
                 </div>
@@ -382,35 +282,169 @@
             }
         });
 
-        // Event Form Submission
-        function submitEvent() {
-            const eventTitle = document.getElementById('eventTitle').value;
-            const eventDate = document.getElementById('eventDate').value;
+        // Check for logged in NGO
+        document.addEventListener('DOMContentLoaded', () => {
+            const userType = localStorage.getItem("vaaniUserType");
+            const ngoName = localStorage.getItem("vaaniNGOName");
+            const loginNavLink = document.querySelector('a[href="login.html"]')?.parentElement;
 
-            if (!eventTitle || !eventDate) {
-                alert('Please fill in all required fields');
+            if (userType === "ngo") {
+                const postEventBtn = document.getElementById('postEventBtn');
+                if (postEventBtn) postEventBtn.style.display = 'block';
+
+                // Add logout if not present
+                addLogoutNav();
+                if (loginNavLink) loginNavLink.style.display = 'none';
+                if (document.getElementById('partnerWithUsNavItem')) {
+                    document.getElementById('partnerWithUsNavItem').style.display = 'none';
+                }
+                console.log(`NGO Logged in: ${ngoName}`);
+            } else if (userType === "admin" || userType === "user") {
+                addLogoutNav();
+                if (loginNavLink) loginNavLink.style.display = 'none';
+            }
+        });
+
+        function addLogoutNav() {
+            const navList = document.querySelector('.navbar-nav');
+            if (!document.getElementById('logoutNavItem')) {
+                const logoutLi = document.createElement('li');
+                logoutLi.className = 'nav-item';
+                logoutLi.id = 'logoutNavItem';
+                logoutLi.innerHTML = `
+                    <a class="nav-link" href="#" onclick="logoutUser()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                `;
+                navList.appendChild(logoutLi);
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem("vaaniUserType");
+            localStorage.removeItem("vaaniNGOId");
+            localStorage.removeItem("vaaniNGOName");
+            localStorage.removeItem("vaaniEmail");
+            alert("Logged out successfully");
+            window.location.reload();
+        }
+
+        // Event Form Submission
+        async function submitEvent() {
+            const ngo_id = localStorage.getItem("vaaniNGOId");
+            const title = document.getElementById('eventTitle').value;
+            const event_date = document.getElementById('eventDate').value;
+            const location = document.getElementById('eventLocation').value;
+            const description = document.getElementById('eventDescription').value;
+
+            if (!title || !event_date || !location || !description) {
+                alert("Please fill all required fields");
                 return;
             }
 
-            // In a real app, this would send data to backend
-            alert('Event posted successfully! It will be reviewed before appearing on the platform.');
+            try {
+                let apiUrl = '/api/ngo/post-event';
+                if (window.location.protocol === 'file:') {
+                    apiUrl = 'http://127.0.0.1:5000/api/ngo/post-event';
+                }
 
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('postEventModal'));
-            modal.hide();
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ngo_id, title, event_date, location, description })
+                });
 
-            // Reset form
-            document.getElementById('eventForm').reset();
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Event posted successfully! 🎉 It will be reviewed by admins.");
+                    bootstrap.Modal.getInstance(document.getElementById('postEventModal')).hide();
+                    document.getElementById('eventForm').reset();
+                } else {
+                    alert("Error posting event: " + (result.error || "Unknown error"));
+                }
+            } catch (err) {
+                console.error("Submit Event Error:", err);
+                alert("Failed to connect to server.");
+            }
         }
 
         // Initialize modal if needed
-        const postEventModal = document.getElementById('postEventModal');
-        if (postEventModal) {
-            postEventModal.addEventListener('show.bs.modal', function () {
-                // Reset form when modal opens
-                document.getElementById('eventForm').reset();
-            });
+        async function loadEvents() {
+            try {
+                let apiUrl = '/api/events';
+                if (window.location.protocol === 'file:') {
+                    apiUrl = 'http://127.0.0.1:5000/api/events';
+                }
+
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (response.ok) {
+                    renderUpcomingEvents(data.upcoming);
+                    renderPastEvents(data.past);
+                }
+            } catch (err) {
+                console.error("Load Events Error:", err);
+                document.getElementById('upcomingEventsContainer').innerHTML = `
+                    <div class="col-12 text-center text-danger">
+                        Failed to load events. Please ensure the backend is running.
+                    </div>
+                `;
+            }
         }
+
+        function renderUpcomingEvents(events) {
+            const container = document.getElementById('upcomingEventsContainer');
+            if (!events || events.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center text-muted">No upcoming events scheduled.</div>';
+                return;
+            }
+
+            container.innerHTML = events.map(event => `
+                <div class="col-md-6 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date">
+                            <i class="fas fa-calendar-alt me-2"></i> ${formatDate(event.event_date)}
+                        </div>
+                        <h4>${event.title}</h4>
+                        <p class="text-muted mb-3">${event.description}</p>
+                        <div class="mb-3">
+                            <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> ${event.location}</p>
+                            <p><i class="fas fa-users me-2 text-primary"></i> Organized by: ${event.ngo_name || 'NGO Partner'}</p>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary">More Details</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPastEvents(events) {
+            const container = document.getElementById('pastEventsContainer');
+            if (!events || events.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center text-muted">No past events found.</div>';
+                return;
+            }
+
+            container.innerHTML = events.map(event => `
+                <div class="col-md-4 mb-4">
+                    <div class="event-card p-4">
+                        <div class="event-date" style="background-color: #6c757d;">
+                            <i class="fas fa-calendar-alt me-2"></i> ${formatDate(event.event_date)}
+                        </div>
+                        <h4>${event.title}</h4>
+                        <p class="text-muted">${event.description.substring(0, 100)}${event.description.length > 100 ? '...' : ''}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatDate(dateStr) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateStr).toLocaleDateString(undefined, options);
+        }
+
+        // Initialize events on load
+        document.addEventListener('DOMContentLoaded', loadEvents);
     </script>
 </body>
 

@@ -15,66 +15,101 @@ class DetectorUI:
         # State variables
         self.sentence = ""
         self.current_prediction = ""
-        self.mirror_mode = False
+        self.mirror_mode = True
         self.running = True
         self.is_speaking = False
+        self.mouse_pos = (0, 0)
         
-        # Button definitions with light colors
-        BUTTON_HEIGHT = 50
-        BUTTON_Y = 10
+        # Premium Color Palette (BGR)
+        self.COLORS = {
+            'bg_dark': (30, 25, 25),
+            'accent': (255, 120, 80),      # Coral/Bright Orange
+            'secondary': (180, 180, 180),
+            'text': (245, 245, 245),
+            'success': (100, 220, 100),
+            'btn_normal': (60, 50, 50),
+            'btn_hover': (90, 80, 80),
+            'glass_bg': (40, 35, 35),
+            'sidebar': (25, 20, 20)
+        }
+        
+        # Button definitions (Adjusted to fit 640px width)
+        self.BUTTON_H = 40
+        self.BUTTON_W = 95
+        self.PAD = 10
         self.buttons = {
-            'add': {'x': 10, 'y': BUTTON_Y, 'w': 120, 'h': BUTTON_HEIGHT, 'label': 'ADD WORD', 'color': (144, 238, 144)},
-            'space': {'x': 140, 'y': BUTTON_Y, 'w': 100, 'h': BUTTON_HEIGHT, 'label': 'SPACE', 'color': (250, 200, 120)},
-            'clear': {'x': 250, 'y': BUTTON_Y, 'w': 100, 'h': BUTTON_HEIGHT, 'label': 'CLEAR', 'color': (147, 181, 255)},
-            'speak': {'x': 360, 'y': BUTTON_Y, 'w': 100, 'h': BUTTON_HEIGHT, 'label': 'SPEAK', 'color': (238, 180, 238)},
-            'mirror': {'x': 470, 'y': BUTTON_Y, 'w': 100, 'h': BUTTON_HEIGHT, 'label': 'MIRROR', 'color': (200, 200, 200)},
-            'stop': {'x': 580, 'y': BUTTON_Y, 'w': 100, 'h': BUTTON_HEIGHT, 'label': 'STOP', 'color': (180, 150, 255)},
+            'add': {'x': 10, 'y': 20, 'w': 110, 'h': self.BUTTON_H, 'label': 'ADD WORD'},
+            'space': {'x': 130, 'y': 20, 'w': 80, 'h': self.BUTTON_H, 'label': 'SPACE'},
+            'clear': {'x': 220, 'y': 20, 'w': 80, 'h': self.BUTTON_H, 'label': 'CLEAR'},
+            'speak': {'x': 310, 'y': 20, 'w': 80, 'h': self.BUTTON_H, 'label': 'SPEAK'},
+            'mirror': {'x': 400, 'y': 20, 'w': 90, 'h': self.BUTTON_H, 'label': 'MIRROR'},
+            'stop': {'x': 520, 'y': 20, 'w': 100, 'h': self.BUTTON_H, 'label': 'STOP (Q)'},
         }
     
-    def speak_text(self, text):
-        if self.is_speaking:
-            return
+    def draw_rounded_rect(self, img, pt1, pt2, color, thickness=-1, radius=10):
+        x1, y1 = pt1
+        x2, y2 = pt2
         
-        def speak():
-            self.is_speaking = True
-            try:
-                engine = pyttsx3.init()
-                engine.say(text)
-                engine.runAndWait()
-                engine.stop()
-            except Exception as e:
-                print(f"Speech error: {e}")
-            finally:
-                self.is_speaking = False
+        # Draw corners
+        cv2.circle(img, (x1 + radius, y1 + radius), radius, color, thickness)
+        cv2.circle(img, (x2 - radius, y1 + radius), radius, color, thickness)
+        cv2.circle(img, (x1 + radius, y2 - radius), radius, color, thickness)
+        cv2.circle(img, (x2 - radius, y2 - radius), radius, color, thickness)
         
-        thread = threading.Thread(target=speak, daemon=True)
-        thread.start()
-    
-    def draw_button(self, frame, btn):
-        color = btn['color']
+        # Draw rectangles
+        cv2.rectangle(img, (x1 + radius, y1), (x2 - radius, y2), color, thickness)
+        cv2.rectangle(img, (x1, y1 + radius), (x2, y2 - radius), color, thickness)
+
+    def draw_ui_overlay(self, frame):
+        H, W, _ = frame.shape
+        overlay = frame.copy()
         
-        # Draw button background
-        cv2.rectangle(frame, (btn['x'], btn['y']), (btn['x'] + btn['w'], btn['y'] + btn['h']), color, -1)
-        # Draw button border
-        cv2.rectangle(frame, (btn['x'], btn['y']), (btn['x'] + btn['w'], btn['y'] + btn['h']), (80, 80, 80), 2)
+        # 1. Top Bar Background (Glass effect)
+        cv2.rectangle(overlay, (0, 0), (W, 85), self.COLORS['bg_dark'], -1)
         
-        # Draw button text (black for light backgrounds)
-        text_size = cv2.getTextSize(btn['label'], cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)[0]
-        text_x = btn['x'] + (btn['w'] - text_size[0]) // 2
-        text_y = btn['y'] + (btn['h'] + text_size[1]) // 2
-        cv2.putText(frame, btn['label'], (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
-    
+        # 2. Bottom Bar (Sentence Display)
+        cv2.rectangle(overlay, (0, H - 100), (W, H), self.COLORS['bg_dark'], -1)
+        
+        # Apply transparency
+        alpha = 0.85
+        cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+        
+        # 3. Draw Buttons
+        for name, btn in self.buttons.items():
+            is_hover = self.is_point_in_button(self.mouse_pos[0], self.mouse_pos[1], btn)
+            color = self.COLORS['btn_hover'] if is_hover else self.COLORS['btn_normal']
+            if name == 'mirror' and self.mirror_mode:
+                color = self.COLORS['accent']
+                
+            self.draw_rounded_rect(frame, (btn['x'], btn['y']), (btn['x'] + btn['w'], btn['y'] + btn['h']), color, radius=8)
+            
+            # Text placement
+            font = cv2.FONT_HERSHEY_DUPLEX
+            text_size = cv2.getTextSize(btn['label'], font, 0.5, 1)[0]
+            text_x = btn['x'] + (btn['w'] - text_size[0]) // 2
+            text_y = btn['y'] + (btn['h'] + text_size[1]) // 2
+            cv2.putText(frame, btn['label'], (text_x, text_y), font, 0.5, self.COLORS['text'], 1, cv2.LINE_AA)
+
+        # 4. Draw Sentence Text
+        sentence_label = "SENTENCE:"
+        cv2.putText(frame, sentence_label, (25, H - 70), cv2.FONT_HERSHEY_DUPLEX, 0.6, self.COLORS['accent'], 1, cv2.LINE_AA)
+        
+        display_text = self.sentence if self.sentence else "Start signing and click 'ADD WORD'..."
+        txt_color = self.COLORS['text'] if self.sentence else self.COLORS['secondary']
+        cv2.putText(frame, display_text, (25, H - 35), cv2.FONT_HERSHEY_DUPLEX, 0.9, txt_color, 2, cv2.LINE_AA)
+
     def is_point_in_button(self, x, y, btn):
         return btn['x'] <= x <= btn['x'] + btn['w'] and btn['y'] <= y <= btn['y'] + btn['h']
     
     def mouse_callback(self, event, x, y, flags, param):
-        # Adjust x coordinate if mirror mode is on
-        click_x = self.frame_width - x if self.mirror_mode else x
+        self.mouse_pos = (x, y)
         
         if event == cv2.EVENT_LBUTTONDOWN:
             for name, btn in self.buttons.items():
-                if self.is_point_in_button(click_x, y, btn):
+                if self.is_point_in_button(x, y, btn):
                     if name == 'add' and self.current_prediction:
+                        if self.sentence and not self.sentence.endswith(' '):
+                            self.sentence += ' '
                         self.sentence += self.current_prediction
                     elif name == 'space':
                         self.sentence += ' '
@@ -89,78 +124,86 @@ class DetectorUI:
                         self.running = False
                     break
     
+    def speak_text(self, text):
+        if self.is_speaking: return
+        def speak():
+            self.is_speaking = True
+            try:
+                # Initialize engine inside the thread
+                import platform
+                driver = 'sapi5' if platform.system() == 'Windows' else None
+                engine = pyttsx3.init(driver)
+                engine.setProperty('rate', 150)
+                engine.say(text)
+                engine.runAndWait()
+                engine.stop()
+            except Exception as e:
+                print(f"TTS Error: {e}")
+            finally:
+                self.is_speaking = False
+        threading.Thread(target=speak, daemon=True).start()
+
     def run(self):
         cap = cv2.VideoCapture(0)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.frame_width)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.frame_height)
+        # Use higher resolution if possible
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         
-        cv2.namedWindow('Sign Language Detector')
-        cv2.setMouseCallback('Sign Language Detector', self.mouse_callback)
+        window_name = 'Vaani Sign Detector'
+        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+        cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.setMouseCallback(window_name, self.mouse_callback)
         
         while self.running:
             ret, frame = cap.read()
-            if not ret:
-                break
+            if not ret: break
             
-            # Apply mirror effect if enabled
-            if self.mirror_mode:
-                frame = cv2.flip(frame, 1)
-            
+            if self.mirror_mode: frame = cv2.flip(frame, 1)
             H, W, _ = frame.shape
-            self.frame_width = W
+            
+            # Reposition buttons to center if W changes
+            total_buttons_width = 620 # Approx width of all buttons
+            start_x = (W - total_buttons_width) // 2
+            offset = start_x
+            for name, btn in self.buttons.items():
+                btn['x'] = offset
+                offset += btn['w'] + 10
             
             # Process frame
-            result = self.detector.process_frame(frame, draw_landmarks=True)
-            frame = result['frame']
+            result = self.detector.process_frame(frame, draw_landmarks=False)
             self.current_prediction = result['prediction'] or ""
             
-            # Draw bounding box if detection exists
+            # Custom Landmark Drawing (Cleaner)
+            if result['hand_landmarks']:
+                for hand_landmarks in result['hand_landmarks']:
+                    self.detector.mp_drawing.draw_landmarks(
+                        frame, hand_landmarks, self.detector.mp_hands.HAND_CONNECTIONS,
+                        self.detector.mp_drawing_styles.get_default_hand_landmarks_style(),
+                        self.detector.mp_drawing_styles.get_default_hand_connections_style()
+                    )
+
+            # Bounding Box with Label
             if result['bounding_box']:
                 x1, y1, x2, y2 = result['bounding_box']
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 0), 4)
-                cv2.putText(frame, self.current_prediction, (x1, y1 - 10), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
+                # Draw sleek label background
+                cv2.rectangle(frame, (x1, y1 - 35), (x1 + 120, y1), self.COLORS['accent'], -1)
+                cv2.putText(frame, self.current_prediction, (x1 + 5, y1 - 10), 
+                           cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1, cv2.LINE_AA)
+                cv2.rectangle(frame, (x1, y1), (x2, y2), self.COLORS['accent'], 2)
             
-            # Draw buttons
-            for name, btn in self.buttons.items():
-                if name == 'mirror':
-                    btn['color'] = (144, 238, 144) if self.mirror_mode else (200, 200, 200)
-                self.draw_button(frame, btn)
+            # UI Overlay
+            self.draw_ui_overlay(frame)
             
-            # Draw sentence display area
-            sentence_y = 80
-            cv2.rectangle(frame, (10, sentence_y), (W - 10, sentence_y + 50), (50, 50, 50), -1)
-            cv2.rectangle(frame, (10, sentence_y), (W - 10, sentence_y + 50), (255, 255, 255), 2)
-            
-            # Display the current sentence
-            display_sentence = self.sentence if self.sentence else "Your sentence will appear here..."
-            cv2.putText(frame, display_sentence, (20, sentence_y + 35), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
-            
-            # Display current prediction indicator
-            if self.current_prediction:
-                cv2.putText(frame, f"Current: {self.current_prediction}", (W - 200, sentence_y + 35), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-            
-            cv2.imshow('Sign Language Detector', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            cv2.imshow('Vaani Sign Detector', frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'): break
         
         cap.release()
         cv2.destroyAllWindows()
         self.detector.release()
-    
-    def get_sentence(self):
-        return self.sentence
-    
-    def clear_sentence(self):
-        self.sentence = ""
-
 
 def run_detector_ui(model_path=None, frame_width=1280, frame_height=720):
     ui = DetectorUI(model_path=model_path, frame_width=frame_width, frame_height=frame_height)
     ui.run()
-
-
 
 if __name__ == "__main__":
     run_detector_ui()

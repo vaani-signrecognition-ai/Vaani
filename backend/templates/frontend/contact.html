@@ -205,6 +205,60 @@
 </head>
 
 <body>
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="index.html">
+                        <div class="logo-container">
+                            <div class="logo-placeholder" style="margin-right: 15px;">
+                                <img src="assets/image.jpeg"
+                                    style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover;">
+                            </div>
+                            <div class="logo-text">
+                                <h1 class="main-logo">VAANI</h1>
+                                <p class="tagline">Voice for Voiceless</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="about.html">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="dictionary.html">Dictionary</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="ngo-partners.html">NGO Partners</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="events.html">Events</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="contact.html">Partner With Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="login.html">
+                                    <i class="fas fa-user"></i> Login
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
     <!-- NGO Partnership Form Page -->
     <div class="contact-form-page">
         <div class="form-card1">
@@ -310,8 +364,110 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="logo-container mb-3">
+                        <img src="assets/image.jpeg"
+                            style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h3 class="main-logo" style="color: white; font-size: 1.8rem;">VAANI</h3>
+                            <p class="tagline" style="color: #cccccc;">Voice for Voiceless</p>
+                        </div>
+                    </div>
+                    <p>VAANI is an initiative to promote Indian Sign Language learning and accessibility for the deaf
+                        and hard-of-hearing community.</p>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="dictionary.html">Dictionary</a></li>
+                        <li><a href="ngo-partners.html">NGO Partners</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="../admin_requests.html">Admin Panel</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="footer-links">
+                        <li><a href="dictionary.html">ISL Dictionary</a></li>
+                        <li><a href="events.html">Upcoming Events</a></li>
+                        <li><a href="ngo-partners.html">Partner NGOs</a></li>
+                        <li><a href="contact.html">Partner With Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Contact Us</h5>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-envelope"></i> contact@vaani.org</p>
+                        <p><i class="fas fa-envelope"></i> partnerships@vaani.org</p>
+                        <p><i class="fas fa-phone"></i> +91 11 2345 6789</p>
+                        <p><i class="fas fa-globe"></i> www.vaani.org</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6>Follow Us</h6>
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-youtube fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2023 VAANI - Voice for Voiceless. All rights reserved.</p>
+                <p class="small">This website follows the accessibility guidelines of the Government of India.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
     <!-- JavaScript -->
     <script>
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        backToTop.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Set active nav link
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPage || (currentPage === '' && link.getAttribute('href') === 'index.html')) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
         // NGO Form Handling
         const ngoForm = document.getElementById('ngoForm');
         const successMessage = document.getElementById('successMessage');
@@ -350,7 +506,13 @@
             submitBtn.disabled = true;
 
             // Send to backend
-            fetch('/api/ngo/partner', {
+            let apiUrl = '/api/ngo/partner';
+            if (window.location.protocol === 'file:') {
+                apiUrl = 'http://127.0.0.1:5000/api/ngo/partner';
+                console.warn("Detected file:// protocol. Using absolute URL for backend.");
+            }
+
+            fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -430,24 +592,25 @@
 
         // Auto-format phone number
         const phoneInput = document.getElementById('contact_number');
-        phoneInput.addEventListener('input', function (e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 0) {
-                if (value.length <= 3) {
-                    value = value;
-                } else if (value.length <= 6) {
-                    value = `${value.slice(0, 3)}-${value.slice(3)}`;
-                } else if (value.length <= 10) {
-                    value = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6)}`;
-                } else {
-                    value = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6, 10)}`;
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    if (value.length <= 3) {
+                        value = value;
+                    } else if (value.length <= 6) {
+                        value = `${value.slice(0, 3)}-${value.slice(3)}`;
+                    } else if (value.length <= 10) {
+                        value = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6)}`;
+                    } else {
+                        value = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6, 10)}`;
+                    }
                 }
-            }
-            e.target.value = value;
-        });
+                e.target.value = value;
+            });
+        }
 
         // Form field focus effects
-        const formFields = document.querySelectorAll('.form-field');
         const inputs = document.querySelectorAll('.input-field');
 
         inputs.forEach(input => {

@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(override=True)
 
 class Config:
     """Base configuration"""
@@ -13,9 +13,22 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-key")
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
     
-    # Database - SQLAlchemy (default to SQLite for local development)
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///vaani.db")
+    # Database - SQLAlchemy (Use absolute path for local)
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DEFAULT_DB_PATH = os.path.join(BASE_DIR, "vaani.db")
+    SQLALCHEMY_DATABASE_URI = f"sqlite:///{DEFAULT_DB_PATH}"
+    
+    if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
+        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
+    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    # Engine options for PostgreSQL (like SSL requirement)
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "connect_args": {
+            "sslmode": "require"
+        }
+    } if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgresql") else {}
     
     # Email settings
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
@@ -51,4 +64,11 @@ config_by_name = {
 
 def get_config():
     env = os.getenv("FLASK_ENV", "development")
-    return config_by_name.get(env, DevelopmentConfig)
+    config_class = config_by_name.get(env, DevelopmentConfig)
+    
+    # Force SQLite for development if needed
+    if env == "development":
+        print(f"[DEBUG] Development mode: forcing local SQLite")
+        # You can also set it directly on the class if you want
+        
+    return config_class

@@ -5,8 +5,9 @@ Flask-SQLAlchemy==3.1.1
 Werkzeug==3.1.5
 python-dotenv==1.2.1
 
-# Database (SQLite is built-in with Python, SQLAlchemy handles it)
+# Database
 SQLAlchemy==2.0.46
+psycopg2-binary==2.9.9
 
 # Machine Learning (Optional - only if using ML features)
 tensorflow==2.15.0
@@ -18,3 +19,6 @@ h5py>=3.9.0
 scikit-learn==1.2.0  # Must match version model was trained with
 scipy==1.10.1  # Compatible with numpy 1.24.3
 pyttsx3>=2.90  # Text-to-speech for SPEAK feature
+
+# Production
+gunicorn==21.2.0

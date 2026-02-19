@@ -1,9 +1,12 @@
 import os
 import shutil
 
+# Base directory for the project
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Source and destination directories
-data_dir = r"c:\Users\Admn\Documents\GitHub\Vaani\ai_service\data"
-dest_dir = r"c:\Users\Admn\Documents\GitHub\Vaani\backend\templates\frontend\assets\dictionary"
+data_dir = os.path.join(base_dir, "ai_service", "data")
+dest_dir = os.path.join(base_dir, "backend", "templates", "frontend", "assets", "dictionary")
 
 # Create destination directory if it doesn't exist
 if not os.path.exists(dest_dir):

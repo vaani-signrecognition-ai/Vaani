@@ -21,16 +21,6 @@
 <body> <!-- Add this at the beginning of the body in index.html -->
     <!-- Replace the script at the beginning of body in index.html with this: -->
 
-    <script>
-        // Check if this is the first visit in this session
-        if (sessionStorage.getItem('vaaniHasLoaded') !== 'true') {
-            // Redirect to loading page
-            window.location.href = "loading.html";
-        }
-
-        // If user directly visits index.html, set the flag for future visits
-        sessionStorage.setItem('vaaniHasLoaded', 'true');
-    </script>
     <!-- Return to Website Button (only shown when modal is open) -->
     <div class="return-to-website" id="returnToWebsite" style="display: none;">
         <button class="btn-return" id="returnBtn">
@@ -165,6 +155,7 @@
         </div>
     </div>
 
+
     <!-- Main Header -->
     <header class="main-header">
         <div class="container">
@@ -204,8 +195,18 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="events.html">Events</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" id="partnerWithUsNavItem">
                                 <a class="nav-link" href="contact.html">Partner With Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="login.html" id="loginNavLink">
+                                    <i class="fas fa-user"></i> Login
+                                </a>
+                            </li>
+                            <li class="nav-item" id="logoutNavItem" style="display: none;">
+                                <a class="nav-link" href="#" onclick="logoutUser()">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -241,11 +242,11 @@
                             <div class="col-md-4">
                                 <div class="sign-image-card">
                                     <div class="sign-image-wrapper">
-                                        <img src="assets/bg3.jpg.jpeg" alt="Community Support" class="sign-img">
+                                        <img src="assets/bg3.jpg.jpeg" alt="ISL Dictionary" class="sign-img">
                                     </div>
                                     <div class="sign-image-overlay">
-                                        <h5>Learn Basic Signs</h5>
-                                        <p>Start your ISL journey</p>
+                                        <h5>ISL Dictionary</h5>
+                                        <p>Browse 100+ sign images</p>
                                     </div>
                                 </div>
                             </div>
@@ -253,11 +254,11 @@
                             <div class="col-md-4">
                                 <div class="sign-image-card">
                                     <div class="sign-image-wrapper">
-                                        <img src="assets/bg1.jpg.jpeg" alt="Learn Sign Language" class="sign-img">
+                                        <img src="assets/bg1.jpg.jpeg" alt="AI Recognition" class="sign-img">
                                     </div>
                                     <div class="sign-image-overlay">
-                                        <h5>Practice Communication</h5>
-                                        <p>Interactive sessions</p>
+                                        <h5>AI Recognition</h5>
+                                        <p>Interactive camera practice</p>
                                     </div>
                                 </div>
                             </div>
@@ -265,12 +266,11 @@
                             <div class="col-md-4">
                                 <div class="sign-image-card">
                                     <div class="sign-image-wrapper">
-                                        <img src="assets/bg2.jpg.jpeg" alt="Community Support" class="sign-img">
-
+                                        <img src="assets/bg2.jpg.jpeg" alt="NGO Partners" class="sign-img">
                                     </div>
                                     <div class="sign-image-overlay">
-                                        <h5>Join Community</h5>
-                                        <p>Connect with learners</p>
+                                        <h5>NGO Partners</h5>
+                                        <p>Connect with organizations</p>
                                     </div>
                                 </div>
                             </div>
@@ -314,7 +314,8 @@
                             <p class="tagline" style="color: #cccccc;">Voice for Voiceless</p>
                         </div>
                     </div>
-                    <p>VAANI is an initiative to promote Indian Sign Language learning and accessibility for the deaf
+                    <p>VAANI is an initiative to promote Indian Sign Language learning and accessibility for the
+                        deaf
                         and hard-of-hearing community.</p>
                 </div>
 
@@ -326,6 +327,8 @@
                         <li><a href="dictionary.html">Dictionary</a></li>
                         <li><a href="ngo-partners.html">NGO Partners</a></li>
                         <li><a href="events.html">Events</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="../admin_requests.html">Admin Panel</a></li>
                     </ul>
                 </div>
 
@@ -664,6 +667,34 @@
                 }
             }
         });
+
+        // Check for logged in NGO
+        document.addEventListener('DOMContentLoaded', () => {
+            const userType = localStorage.getItem("vaaniUserType");
+            const ngoName = localStorage.getItem("vaaniNGOName");
+
+            if (userType === "ngo") {
+                document.getElementById('logoutNavItem').style.display = 'block';
+                document.getElementById('loginNavLink').style.display = 'none';
+                if (document.getElementById('partnerWithUsNavItem')) {
+                    document.getElementById('partnerWithUsNavItem').style.display = 'none';
+                }
+                console.log(`NGO Logged in: ${ngoName}`);
+            } else if (userType === "admin" || userType === "user") {
+                document.getElementById('logoutNavItem').style.display = 'block';
+                document.getElementById('loginNavLink').style.display = 'none';
+            }
+        });
+
+        function logoutUser() {
+            localStorage.removeItem("vaaniUserType");
+            localStorage.removeItem("vaaniNGOId");
+            localStorage.removeItem("vaaniNGOName");
+            localStorage.removeItem("vaaniEmail");
+            alert("Logged out successfully");
+            window.location.reload();
+        }
+
 
         // Initialize
         console.log('VAANI Website Ready');

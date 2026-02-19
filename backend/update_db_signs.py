@@ -1,22 +1,28 @@
 import os
 import sys
 
-# Force SQLite for this script
-os.environ["DATABASE_URL"] = "sqlite:///vaani.db"
+# Default to SQLite if no DATABASE_URL is set, but don't force it
+if "DATABASE_URL" not in os.environ:
+    os.environ["DATABASE_URL"] = "sqlite:///vaani.db"
 
-# Add backend to path to import app and models
-sys.path.append(os.path.join(os.getcwd(), 'backend'))
+# Add current directory to path
+sys.path.append(os.getcwd())
 
 from app import app
 from extensions import db
 from models.database_models import SignDictionary
 
-# Directory where we copied the images (relative to frontend root)
+# Directory where we copied the images (relative to backend)
 image_base_url = "assets/dictionary/"
+# Path to assets directory relative to this script's location
+base_dir = os.path.dirname(os.path.abspath(__file__))
+assets_dir = os.path.join(base_dir, "templates", "frontend", "assets", "dictionary")
 
 with app.app_context():
-    # Get list of files in the dictionary assets folder
-    assets_dir = r"c:\Users\Admn\Documents\GitHub\Vaani\backend\templates\frontend\assets\dictionary"
+    if not os.path.exists(assets_dir):
+        print(f"Assets directory not found at {assets_dir}")
+        sys.exit(1)
+        
     image_files = [f for f in os.listdir(assets_dir) if f.endswith(".jpg")]
     
     # Track additions

@@ -17,8 +17,19 @@ async function searchISL() {
         </div>`;
 
   try {
-    const response = await fetch(`/api/dictionary?search=${encodeURIComponent(query)}`);
-    if (!response.ok) throw new Error('Failed to fetch from dictionary');
+    // Detect if running via file:// protocol (direct file open)
+    let apiUrl = '/api/dictionary';
+    if (window.location.protocol === 'file:') {
+      apiUrl = 'http://127.0.0.1:5000/api/dictionary';
+      console.warn("Detected file:// protocol. Using absolute URL for backend.");
+    }
+
+    const response = await fetch(`${apiUrl}?search=${encodeURIComponent(query)}`);
+    if (!response.ok) {
+      if (response.status === 404) throw new Error('Dictionary service not found');
+      if (response.status === 500) throw new Error('Database connection failed');
+      throw new Error('Failed to fetch from dictionary');
+    }
 
     const matches = await response.json();
 
@@ -54,17 +65,24 @@ async function searchISL() {
                 </div>
               </div>
               <div class="col-md-8">
-                <h4 class="mb-2" style="text-transform: capitalize; color: #2d3748;">
-                  <i class="fas fa-sign-language me-2" style="color: ${categoryColor};"></i>
-                  ${word}
-                </h4>
+                <div class="d-flex justify-content-between align-items-start">
+                  <h4 class="mb-2" style="text-transform: capitalize; color: #2d3748;">
+                    <i class="fas fa-sign-language me-2" style="color: ${categoryColor};"></i>
+                    ${word}
+                  </h4>
+                  <button class="btn btn-sm btn-outline-secondary rounded-circle" 
+                          onclick="speakWord('${word}')" 
+                          title="Listen to pronunciation">
+                    <i class="fas fa-volume-up"></i>
+                  </button>
+                </div>
                 <div class="d-flex align-items-center mb-3">
                     <span class="badge" style="background: ${categoryColor}; font-size: 0.85rem; padding: 6px 12px;">
                       ${isNaN(word) ? (word.length === 1 ? 'Letter' : 'Word') : 'Number'}
                     </span>
                     <small class="ms-3 text-muted"><i class="fas fa-info-circle me-1"></i> Indian Sign Language</small>
                 </div>
-                <p class="text-muted mt-2 mb-0">Discover the sign for "<strong>${word}</strong>". Click the image to view it full size. These images help in learning the basic hand positions for ISL.</p>
+                <p class="text-muted mt-2 mb-0">Discover the sign for "<strong>${word}</strong>". Click the volume icon to hear the word, or click the image to view it full size.</p>
               </div>
             </div>
           </div>`;
@@ -80,6 +98,21 @@ async function searchISL() {
                 Error searching the dictionary. Please try again later.
             </div>`;
   }
+}
+
+// Speak the word using Web Speech API
+function speakWord(text) {
+  if (!window.speechSynthesis) {
+    alert("Target browser does not support text-to-speech.");
+    return;
+  }
+
+  // Prettify text (remove underscores, etc)
+  const cleanText = text.replace(/_/g, ' ').trim();
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  utterance.lang = 'en-IN';
+  utterance.rate = 0.9;
+  window.speechSynthesis.speak(utterance);
 }
 
 // Category color mapping
