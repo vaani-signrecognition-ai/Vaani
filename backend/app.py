@@ -61,6 +61,10 @@ def ngo_partners():
 def contact():
     return render_template("frontend/contact.html")
 
+@app.route("/login.html")
+def login_page():
+    return render_template("frontend/login.html")
+
 @app.route("/admin")
 def admin():
     return render_template("admin_requests.html")
@@ -146,8 +150,7 @@ def get_events():
         # Use simple sorting first, or implement a Priority Queue (Min-Heap) 
         # to efficiently get upcoming events
         
-        today = date.today()
-        upcoming_heap = []
+        upcoming_events = []
         past_events = []
         
         for event in all_events:
@@ -155,22 +158,18 @@ def get_events():
             event_date = date.fromisoformat(event_data['event_date'])
             
             if event_date >= today:
-                # Priority Queue stores (date, event_data)
-                # Python's heapq is a min-heap, so earliest date comes first
-                heapq.heappush(upcoming_heap, (event_data['event_date'], event_data))
+                upcoming_events.append(event_data)
             else:
                 past_events.append(event_data)
         
-        # Extract sorted upcoming events from heap
-        sorted_upcoming = []
-        while upcoming_heap:
-            sorted_upcoming.append(heapq.heappop(upcoming_heap)[1])
+        # Sort upcoming events by date ascending
+        upcoming_events.sort(key=lambda x: x['event_date'])
             
         # Sort past events by date descending
         past_events.sort(key=lambda x: x['event_date'], reverse=True)
             
         return jsonify({
-            "upcoming": sorted_upcoming,
+            "upcoming": upcoming_events,
             "past": past_events
         }), 200
 
@@ -311,9 +310,6 @@ def handle_ngo_request_action():
         if ngo_request.status != "PENDING":
             return jsonify({"error": f"Request already {ngo_request.status.lower()}"}), 400
         
-        # Update request status
-        ngo_request.status = action
-
         # If approved → create NGO account and NGO entry
         if action == "APPROVED":
             email = ngo_request.email
@@ -326,8 +322,7 @@ def handle_ngo_request_action():
             existing_account = NGOAccount.query.filter_by(email=email).first()
             
             if existing_ngo or existing_account:
-                db.session.rollback()
-                return jsonify({"error": "An NGO with this email already exists"}), 400
+                return jsonify({"error": f"An NGO with email '{email}' already exists and is approved."}), 400
 
             temp_password = "VAANI@" + ''.join(
                 random.choices(string.digits, k=4)
@@ -353,8 +348,11 @@ def handle_ngo_request_action():
                 password_hash=password_hash,
                 is_active=True
             )
-            
             db.session.add(new_account)
+            
+            # Update request status
+            ngo_request.status = "APPROVED"
+            
             db.session.commit()
 
             # Try to send approval email
@@ -374,6 +372,7 @@ def handle_ngo_request_action():
         
         # Send rejection email if rejected
         if action == "REJECTED":
+            ngo_request.status = "REJECTED"
             db.session.commit()
             try:
                 send_rejection_email(ngo_request.email, ngo_request.org_name)

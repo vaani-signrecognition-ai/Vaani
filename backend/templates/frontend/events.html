@@ -125,16 +125,6 @@
         </div>
     </section>
 
-    <!-- Past Events -->
-    <section class="content-section" style="background-color: #f9f9f9;">
-        <div class="container">
-            <h2 class="section-title">Past Events</h2>
-
-            <div class="row" id="pastEventsContainer">
-                <!-- Data loaded via API -->
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -164,7 +154,7 @@
                         <li><a href="ngo-partners.html">NGO Partners</a></li>
                         <li><a href="events.html">Events</a></li>
                         <li><a href="login.html">Login</a></li>
-                        <li><a href="../admin_requests.html">Admin Panel</a></li>
+                        <li><a href="/admin">Admin Panel</a></li>
                     </ul>
                 </div>
 
@@ -356,9 +346,10 @@
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert("Event posted successfully! 🎉 It will be reviewed by admins.");
+                    alert("Event posted successfully! 🎉");
                     bootstrap.Modal.getInstance(document.getElementById('postEventModal')).hide();
                     document.getElementById('eventForm').reset();
+                    loadEvents(); // Refresh the display immediately
                 } else {
                     alert("Error posting event: " + (result.error || "Unknown error"));
                 }
@@ -381,7 +372,6 @@
 
                 if (response.ok) {
                     renderUpcomingEvents(data.upcoming);
-                    renderPastEvents(data.past);
                 }
             } catch (err) {
                 console.error("Load Events Error:", err);
@@ -418,25 +408,6 @@
             `).join('');
         }
 
-        function renderPastEvents(events) {
-            const container = document.getElementById('pastEventsContainer');
-            if (!events || events.length === 0) {
-                container.innerHTML = '<div class="col-12 text-center text-muted">No past events found.</div>';
-                return;
-            }
-
-            container.innerHTML = events.map(event => `
-                <div class="col-md-4 mb-4">
-                    <div class="event-card p-4">
-                        <div class="event-date" style="background-color: #6c757d;">
-                            <i class="fas fa-calendar-alt me-2"></i> ${formatDate(event.event_date)}
-                        </div>
-                        <h4>${event.title}</h4>
-                        <p class="text-muted">${event.description.substring(0, 100)}${event.description.length > 100 ? '...' : ''}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
 
         function formatDate(dateStr) {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };

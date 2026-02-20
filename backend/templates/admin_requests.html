@@ -281,11 +281,11 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg admin-navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="frontend/index.html">
+            <a class="navbar-brand" href="index.html">
                 <i class="fas fa-shield-alt me-2"></i>VAANI ADMIN
             </a>
             <div class="ms-auto">
-                <a href="frontend/index.html" class="btn btn-outline-info btn-sm rounded-pill">
+                <a href="index.html" class="btn btn-outline-info btn-sm rounded-pill">
                     <i class="fas fa-home me-1"></i> Back to Site
                 </a>
             </div>
@@ -362,6 +362,47 @@
                 </div>
                 <div class="modal-body p-4">
                     <p id="modalDescription" style="white-space: pre-wrap; color: var(--text-primary);"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: var(--card-bg); border: 1px solid var(--success);">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-success"><i class="fas fa-check-circle me-2"></i>Approved Successfully
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <div class="mb-4">
+                        <p class="text-secondary mb-1">Temporary password generated for organization:</p>
+                        <h5 id="successOrgName" class="text-white"></h5>
+                    </div>
+
+                    <div class="password-box p-3 mb-4"
+                        style="background: rgba(46, 213, 115, 0.1); border: 2px dashed var(--success); border-radius: 12px; position: relative;">
+                        <small class="d-block text-secondary mb-2"
+                            style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Temporary
+                            Password</small>
+                        <span id="displayTempPassword" class="h3 fw-bold text-white mb-0"
+                            style="letter-spacing: 2px;"></span>
+                        <button class="btn btn-sm btn-outline-light ms-3" onclick="copyPassword()"
+                            title="Copy to clipboard">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+
+                    <div id="emailStatusBox" class="p-3 rounded-3" style="font-size: 0.9rem;">
+                        <!-- Email status injected here -->
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-success w-100 rounded-pill"
+                        data-bs-dismiss="modal">Done</button>
                 </div>
             </div>
         </div>
@@ -453,6 +494,9 @@
         }
 
         function takeAction(requestId, action) {
+            const req = allRequests.find(r => r.request_id === requestId);
+            const orgName = req ? req.org_name : "Organization";
+
             const confirmMsg = `Are you sure you want to ${action.toLowerCase()} this request?`;
             if (!confirm(confirmMsg)) return;
 
@@ -470,13 +514,23 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.temp_password) {
-                        const emailMsg = data.email_sent
-                            ? "An email has been sent to the NGO with these details."
-                            : "⚠️ Note: Email could not be sent. Please share details manually.";
+                        // Use the new Premium Success Modal
+                        document.getElementById('successOrgName').textContent = orgName;
+                        document.getElementById('displayTempPassword').textContent = data.temp_password;
 
-                        alert(`NGO Approved Successfully!\n\n` +
-                            `Temporary Password: ${data.temp_password}\n\n` +
-                            `${emailMsg}`);
+                        const statusBox = document.getElementById('emailStatusBox');
+                        if (data.email_sent) {
+                            statusBox.className = "p-3 rounded-3 bg-opacity-10 bg-success text-success";
+                            statusBox.innerHTML = `<i class="fas fa-paper-plane me-2"></i>An email notification has been sent successfully.`;
+                        } else {
+                            statusBox.className = "p-3 rounded-3 bg-opacity-10 bg-warning text-warning";
+                            statusBox.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>Email failed. Please share the password manually.`;
+                        }
+
+                        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        successModal.show();
+                    } else if (data.error) {
+                        alert(`Issue: ${data.error}`);
                     } else {
                         alert(data.message || 'Action completed');
                     }
@@ -486,6 +540,20 @@
                     console.error('Error:', err);
                     alert('Action failed. Check console.');
                 });
+        }
+
+        function copyPassword() {
+            const password = document.getElementById('displayTempPassword').textContent;
+            navigator.clipboard.writeText(password).then(() => {
+                const btn = document.querySelector('.password-box button');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.classList.replace('btn-outline-light', 'btn-success');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.replace('btn-success', 'btn-outline-light');
+                }, 2000);
+            });
         }
 
         function showDetails(encodedDesc) {

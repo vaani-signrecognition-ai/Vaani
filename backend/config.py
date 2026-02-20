@@ -13,10 +13,14 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-key")
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
     
-    # Database - SQLAlchemy (Use absolute path for local)
+    # Database - SQLAlchemy
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DEFAULT_DB_PATH = os.path.join(BASE_DIR, "vaani.db")
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{DEFAULT_DB_PATH}"
+    
+    # Priority: Env variable DATABASE_URL > local SQLite
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    if not SQLALCHEMY_DATABASE_URI:
+        SQLALCHEMY_DATABASE_URI = f"sqlite:///{DEFAULT_DB_PATH}"
     
     if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
         SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
@@ -68,7 +72,7 @@ def get_config():
     
     # Force SQLite for development if needed
     if env == "development":
-        print(f"[DEBUG] Development mode: forcing local SQLite")
-        # You can also set it directly on the class if you want
+        # print(f"[DEBUG] Development mode: using SQLite (unless DATABASE_URL is set in .env)")
+        pass
         
     return config_class

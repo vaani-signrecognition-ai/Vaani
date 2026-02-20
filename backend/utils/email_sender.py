@@ -8,13 +8,13 @@ import os
 
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv(override=True)
+# Load environment variables is now done inside the functions
 
 def send_approval_email(recipient_email, org_name, temp_password):
     """
     Send approval notification email to NGO
     """
+    load_dotenv(override=True)
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
     SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
     SENDER_EMAIL = os.getenv("SENDER_EMAIL")
@@ -130,6 +130,7 @@ def send_rejection_email(recipient_email, org_name, reason=""):
     """
     Send rejection notification email to NGO
     """
+    load_dotenv(override=True)
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
     SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
     SENDER_EMAIL = os.getenv("SENDER_EMAIL")
