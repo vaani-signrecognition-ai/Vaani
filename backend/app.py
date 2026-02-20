@@ -357,15 +357,18 @@ def handle_ngo_request_action():
             db.session.add(new_account)
             db.session.commit()
 
-            # Try to send approval email (don't fail if email fails)
+            # Try to send approval email
+            email_sent = False
             try:
-                send_approval_email(email, org_name, temp_password)
+                email_sent = send_approval_email(email, org_name, temp_password)
             except Exception as email_error:
                 print(f"Warning: Failed to send approval email: {email_error}")
+                email_sent = False
 
             return jsonify({
                 "message": "NGO approved and account created",
-                "temp_password": temp_password,   # demo purpose
+                "temp_password": temp_password,
+                "email_sent": email_sent,
                 "ngo_id": new_ngo.ngo_id
             }), 200
         

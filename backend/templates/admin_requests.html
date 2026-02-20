@@ -470,7 +470,13 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.temp_password) {
-                        alert(`NGO Approved Successfully!\n\nTemporary Password: ${data.temp_password}\n\nPlease save this and share with the NGO.`);
+                        const emailMsg = data.email_sent
+                            ? "An email has been sent to the NGO with these details."
+                            : "⚠️ Note: Email could not be sent. Please share details manually.";
+
+                        alert(`NGO Approved Successfully!\n\n` +
+                            `Temporary Password: ${data.temp_password}\n\n` +
+                            `${emailMsg}`);
                     } else {
                         alert(data.message || 'Action completed');
                     }

@@ -6,20 +6,23 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv(override=True)
+
 def send_approval_email(recipient_email, org_name, temp_password):
     """
     Send approval notification email to NGO
-    
-    Args:
-        recipient_email: NGO email address
-        org_name: Organization name
-        temp_password: Temporary password for login
     """
-    # Email configuration (can be moved to config.py)
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
     SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-    SENDER_EMAIL = os.getenv("SENDER_EMAIL", "vaani.isl@gmail.com")
-    SENDER_PASSWORD = os.getenv("SENDER_PASSWORD", "")
+    SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+    SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
+    
+    if not SENDER_EMAIL or not SENDER_PASSWORD:
+        print("⚠️ Email aborted: Credentials not missing in .env")
+        return False
     
     # Create email
     message = MIMEMultipart("alternative")
@@ -126,16 +129,14 @@ def send_approval_email(recipient_email, org_name, temp_password):
 def send_rejection_email(recipient_email, org_name, reason=""):
     """
     Send rejection notification email to NGO
-    
-    Args:
-        recipient_email: NGO email address
-        org_name: Organization name
-        reason: Optional rejection reason
     """
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
     SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-    SENDER_EMAIL = os.getenv("SENDER_EMAIL", "vaani.isl@gmail.com")
-    SENDER_PASSWORD = os.getenv("SENDER_PASSWORD", "")
+    SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+    SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
+    
+    if not SENDER_EMAIL or not SENDER_PASSWORD:
+        return False
     
     message = MIMEMultipart("alternative")
     message["Subject"] = "Update on Your Partnership Request with VAANI"
