@@ -8,9 +8,7 @@ import sys
 # Set working directory to the script's location
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# Set environment variables (default to SQLite if not provided)
-if 'DATABASE_URL' not in os.environ:
-    os.environ['DATABASE_URL'] = 'sqlite:///vaani.db'
+# Server will use the database path defined in config.py
 
 print("=" * 50)
 print("Starting VAANI Server...")

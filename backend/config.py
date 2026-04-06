@@ -13,26 +13,14 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-key")
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
     
-    # Database - SQLAlchemy
+    # Database - SQLAlchemy (Local SQLite)
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DEFAULT_DB_PATH = os.path.join(BASE_DIR, "vaani.db")
     
-    # Priority: Env variable DATABASE_URL > local SQLite
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
-    if not SQLALCHEMY_DATABASE_URI:
-        SQLALCHEMY_DATABASE_URI = f"sqlite:///{DEFAULT_DB_PATH}"
-    
-    if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
-        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
-    
+    # Force use local SQLite for now
+    SQLALCHEMY_DATABASE_URI = f"sqlite:///{DEFAULT_DB_PATH}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    
-    # Engine options for PostgreSQL (like SSL requirement)
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "connect_args": {
-            "sslmode": "require"
-        }
-    } if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgresql") else {}
+    SQLALCHEMY_ENGINE_OPTIONS = {}
     
     # Email settings
     SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")

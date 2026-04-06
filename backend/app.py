@@ -106,10 +106,9 @@ def get_dictionary():
             # 1. Try exact match first
             exact_match = SignDictionary.query.filter(SignDictionary.word.ilike(search)).first()
             
-            # 2. Get fuzzy matches on the word
             other_matches = SignDictionary.query.filter(
                 SignDictionary.word.ilike(f'%{search}%'),
-                SignDictionary.word.is_not(search)
+                SignDictionary.word != search
             ).all()
 
             # 3. If it's a single letter, include other signs starting with that letter
@@ -117,7 +116,7 @@ def get_dictionary():
             if len(search) == 1:
                 letter_matches = SignDictionary.query.filter(
                     SignDictionary.starting_letter.ilike(search),
-                    SignDictionary.word.is_not(search),
+                    SignDictionary.word != search,
                     ~SignDictionary.word.ilike(f'%{search}%') # Don't duplicate
                 ).all()
 
@@ -143,6 +142,7 @@ def get_events():
     try:
         import heapq
         from datetime import date
+        today = date.today()
         
         # Get all events
         all_events = Event.query.all()
